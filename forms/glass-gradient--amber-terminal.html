@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Glass Gradient / Terminal Amber</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+
+:root{
+  --bg:#0a0d0f; --surface:#10151a; --surface2:#151b21; --border:#1f2830;
+  --text:#d7dde2; --text-dim:#6b7680; --accent:#e8a33d; --accent-dim:#8a6a35;
+  --accent-ink:#1a1206; --radius:3px;
+  --font-display:'IBM Plex Mono', monospace; --font-body:'Inter', sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{min-height:100%;}
+body{
+  background:var(--bg); color:var(--text); font-family:var(--font-body);
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit;}
+.field{margin-bottom:18px;}
+.field label{
+  display:flex;justify-content:space-between;align-items:baseline;
+  font-family:var(--font-display); font-size:11.5px; letter-spacing:.06em;
+  color:var(--text-dim); margin-bottom:8px; text-transform:uppercase;
+}
+.field label .req{color:var(--accent);}
+.field input{
+  width:100%; background:var(--surface2); border:1.5px solid var(--border);
+  color:var(--text); font-family:var(--font-body); font-size:14.5px;
+  padding:12px 14px; border-radius:var(--radius); outline:none;
+  transition:border-color .15s ease, box-shadow .15s ease, background .15s ease;
+}
+.field input::placeholder{color:var(--text-dim); opacity:.6;}
+.field input:focus{border-color:var(--accent); box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);}
+.row-between{
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:12.5px;color:var(--text-dim); margin:-4px 0 24px;
+}
+.row-between a{border-bottom:1px dotted var(--text-dim); text-decoration:none;}
+.row-between a:hover{color:var(--accent); border-color:var(--accent);}
+.checkbox{display:flex;align-items:center;gap:8px;}
+.checkbox input{accent-color:var(--accent); width:14px;height:14px;}
+button.submit{
+  width:100%; background:var(--accent); color:var(--accent-ink); border:1.5px solid var(--accent);
+  font-family:var(--font-display); font-weight:600; font-size:13.5px; letter-spacing:.03em;
+  padding:13px; border-radius:var(--radius); cursor:pointer;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  transition:filter .15s ease, transform .1s ease;
+  text-transform:uppercase;
+}
+button.submit:hover{filter:brightness(1.08);}
+button.submit:active{transform:scale(.99);}
+button.submit svg{width:14px;height:14px;flex:none;}
+button.ghost{
+  width:100%; background:transparent; color:var(--text); border:1.5px solid var(--border);
+  font-family:var(--font-body); font-weight:500; font-size:13.5px;
+  padding:12px; border-radius:var(--radius); cursor:pointer; margin-top:10px;
+}
+button.ghost:hover{border-color:var(--accent); color:var(--accent);}
+.divider{
+  display:flex;align-items:center;gap:14px;margin:24px 0;
+  color:var(--text-dim); font-family:var(--font-display); font-size:10.5px; letter-spacing:.1em;
+}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--border);}
+.footer-note{text-align:center;font-size:12.5px;color:var(--text-dim);}
+.footer-note a{color:var(--accent);text-decoration:none;font-weight:600;}
+.footer-note a:hover{text-decoration:underline;}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+
+
+    body{
+      min-height:100vh; display:flex; align-items:center; justify-content:center; padding:40px;
+      background:
+        radial-gradient(circle at 15% 20%, rgba(124,231,196,0.25), transparent 40%),
+        radial-gradient(circle at 85% 80%, rgba(124,120,231,0.28), transparent 45%),
+        var(--bg);
+    }
+    .card{
+      width:100%; max-width:400px; padding:42px 36px; border-radius:var(--radius);
+      background:var(--surface); border:1px solid var(--border);
+      backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+      box-shadow:0 20px 60px rgba(0,0,0,0.35);
+    }
+    h1{font-family:var(--font-display); font-size:23px; margin-bottom:6px;}
+    .sub{font-size:13.5px; color:var(--text-dim); margin-bottom:30px;}
+    
+</style>
+</head>
+<body>
+
+    <div class="card">
+      <h1>Sign in</h1><div class="sub">Your session floats free — glass, not walls.</div>
+      
+    <form onsubmit="return false;">
+      <div class="field" style="position:relative;">
+        <label style="position:absolute; top:-8px; left:12px; background:var(--surface); padding:0 6px;">EMAIL</label>
+        <input type="email" placeholder="you@company.com" required style="margin-top:6px;" /></div>
+      <div class="field" style="position:relative;">
+        <label style="position:absolute; top:-8px; left:12px; background:var(--surface); padding:0 6px;">PASSWORD</label>
+        <input type="password" placeholder="••••••••••••" required style="margin-top:6px;" /></div>
+      <div class="row-between">
+        <label class="checkbox"><input type="checkbox" /> Remember me</label>
+        <a href="#">Forgot password?</a>
+      </div>
+      <button class="submit" type="submit">Sign In <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+    </form>
+    <p class="footer-note" style="margin-top:20px;">New here? <a href="#">Create an account</a></p>
+    
+    </div>
+    
+</body>
+</html>
