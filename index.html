@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Login Kit — 50 Free Login Form Templates</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap header-row">
+    <div class="logo">
+      <span class="logo-mark">◆</span>LOGIN<span class="thin">KIT</span>
+    </div>
+    <nav class="header-nav">
+      <a href="#grid">Browse</a>
+      <a href="#faq">FAQ</a>
+      <a href="https://github.com" target="_blank" rel="noopener">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <p class="eyebrow">50 templates · free · MIT licensed</p>
+      <h1>Login forms, <em>not</em> another gray card.</h1>
+      <p class="lede">Ten distinct layout concepts — terminal consoles, glass panels, brutalist blocks, editorial splits — each rebuilt across five complete color &amp; type systems. Every one is a single self-contained HTML file. Preview it live, copy the code, ship it.</p>
+      <div class="hero-stats">
+        <div><strong id="stat-count">50</strong><span>templates</span></div>
+        <div><strong>10</strong><span>layout concepts</span></div>
+        <div><strong>0</strong><span>dependencies</span></div>
+      </div>
+    </div>
+    <div class="hero-preview" id="hero-preview">
+      <!-- filled by app.js: rotating live preview -->
+    </div>
+  </div>
+</section>
+
+<section class="controls wrap" id="grid">
+  <div class="search-row">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input type="text" id="search" placeholder="Search templates — “terminal”, “editorial”, “violet”…" autocomplete="off"/>
+    </div>
+    <div class="result-count"><span id="result-count">50</span> results</div>
+  </div>
+
+  <div class="filter-row">
+    <div class="filter-group">
+      <span class="filter-label">Layout</span>
+      <div class="chips" id="layout-chips"></div>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">Palette</span>
+      <div class="chips" id="palette-chips"></div>
+    </div>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="card-grid" id="card-grid"></div>
+  <p class="empty-state" id="empty-state" hidden>No templates match those filters. <button id="reset-filters">Clear filters</button></p>
+</section>
+
+<section class="faq wrap" id="faq">
+  <h2>A few things worth knowing</h2>
+  <div class="faq-grid">
+    <div><h3>How do I use one?</h3><p>Open a template, hit “Code”, copy the whole file. It's plain HTML/CSS/JS with one Google Fonts link — drop it straight into a project or wire it to your own auth logic.</p></div>
+    <div><h3>Can I change the colors?</h3><p>Every template is built on CSS custom properties (<code>--bg</code>, <code>--accent</code>, <code>--radius</code>…) declared at the top of the file, so re-theming is a handful of value edits.</p></div>
+    <div><h3>Is this actually free?</h3><p>Yes — MIT licensed. Use it in personal or commercial projects, no attribution required.</p></div>
+    <div><h3>Are these accessible?</h3><p>Inputs have labels, focus states are visible, and color contrast was checked per palette — but you should still test against your own auth flow and content.</p></div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <span>LOGINKIT — built for people tired of the same gray card.</span>
+  </div>
+</footer>
+
+<div class="modal-backdrop" id="modal-backdrop">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <h3 id="modal-title"></h3>
+        <p id="modal-blurb"></p>
+      </div>
+      <button class="modal-close" id="modal-close" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-tabs">
+      <button class="tab-btn active" data-tab="preview">Preview</button>
+      <button class="tab-btn" data-tab="code">Code</button>
+    </div>
+    <div class="modal-body">
+      <div class="tab-panel" data-panel="preview"><iframe id="modal-iframe" title="Live preview"></iframe></div>
+      <div class="tab-panel" data-panel="code" hidden>
+        <div class="code-toolbar">
+          <button id="copy-code">Copy code</button>
+          <a id="open-new" target="_blank" rel="noopener">Open in new tab ↗</a>
+        </div>
+        <pre id="modal-code"></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="app-data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
