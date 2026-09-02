@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Vault — Access</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0c0b09; --card:#141210; --line:rgba(201,162,74,0.14); --gold:#c9a24a; --gold-bright:#e7cb8a;
+    --cream:#efe9db; --dim:#8b8270;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{
+    background:
+      linear-gradient(var(--ink), var(--ink)) padding-box,
+      repeating-linear-gradient(0deg, rgba(201,162,74,0.03) 0 1px, transparent 1px 64px),
+      repeating-linear-gradient(90deg, rgba(201,162,74,0.03) 0 1px, transparent 1px 64px),
+      var(--ink);
+    color:var(--cream); font-family:'Inter', sans-serif; -webkit-font-smoothing:antialiased;
+    min-height:100vh; display:flex; align-items:center; justify-content:center; padding:60px 24px;
+  }
+
+  .stage{ width:100%; max-width:380px; text-align:center; }
+
+  .dial-wrap{ display:flex; justify-content:center; margin-bottom:30px; }
+  .dial{ width:76px; height:76px; animation:dialIn 1.1s cubic-bezier(.65,0,.35,1) forwards; transform:rotate(-260deg); opacity:0; }
+  @keyframes dialIn{ 0%{ transform:rotate(-260deg); opacity:0; } 60%{ opacity:1; } 100%{ transform:rotate(0deg); opacity:1; } }
+  .dial circle{ fill:none; stroke:var(--gold); stroke-width:1; }
+  .dial .tick{ stroke:var(--gold); stroke-width:1.2; opacity:.6; }
+  .dial .pointer{ stroke:var(--gold-bright); stroke-width:2; stroke-linecap:round; }
+
+  h1{ font-family:'Cormorant Garamond', serif; font-weight:500; font-size:29px; margin-bottom:8px;
+    opacity:0; animation:fadeUp .8s cubic-bezier(.16,1,.3,1) forwards; animation-delay:.55s; }
+  .sub{ font-size:13.5px; color:var(--dim); margin-bottom:32px;
+    opacity:0; animation:fadeUp .8s cubic-bezier(.16,1,.3,1) forwards; animation-delay:.62s; }
+  @keyframes fadeUp{ to{ opacity:1; transform:none; } }
+  h1, .sub{ transform:translateY(8px); }
+
+  .panel{ text-align:left; background:var(--card); border:1px solid var(--line); padding:36px 32px; border-radius:2px;
+    opacity:0; animation:fadeUp .8s cubic-bezier(.16,1,.3,1) forwards; animation-delay:.7s; }
+
+  .tabs{ position:relative; display:flex; gap:36px; margin-bottom:30px; justify-content:center; padding-bottom:14px; border-bottom:1px solid var(--line); }
+  .tabs button{ background:none; border:none; color:var(--dim); font-size:11px; letter-spacing:.09em; text-transform:uppercase; padding:0; cursor:pointer; transition:color .3s ease; }
+  .tabs button.active{ color:var(--gold-bright); }
+  .tab-indicator{ position:absolute; bottom:-1px; width:5px; height:5px; border-radius:50%; background:var(--gold-bright); box-shadow:0 0 8px var(--gold); transition:transform .45s cubic-bezier(.65,0,.35,1); }
+
+  .field{ position:relative; margin-bottom:24px; }
+  .field label{ position:absolute; left:0; top:11px; font-size:14px; color:var(--dim); pointer-events:none; transition:transform .3s cubic-bezier(.4,0,.2,1), font-size .3s ease, color .3s ease; transform-origin:left top; }
+  .field input{ width:100%; background:none; border:none; border-bottom:1px solid var(--line); color:var(--cream); font-size:15px; padding:10px 0; outline:none; transition:border-color .3s ease; }
+  .field .underline-accent{ position:absolute; left:0; right:0; bottom:-1px; height:1.5px; background:var(--gold-bright); transform:scaleX(0); transition:transform .4s cubic-bezier(.65,0,.35,1); box-shadow:0 0 8px var(--gold); }
+  .field input:focus ~ .underline-accent{ transform:scaleX(1); }
+  .field input:focus{ border-color:transparent; }
+  .field input:focus + label, .field input:not(:placeholder-shown) + label{ transform:translateY(-19px); font-size:11px; color:var(--gold-bright); }
+  .field input::placeholder{ color:transparent; }
+  .extra{ max-height:0; opacity:0; overflow:hidden; transition:max-height .5s cubic-bezier(.4,0,.2,1), opacity .35s ease; }
+
+  .row-between{ display:flex; justify-content:space-between; font-size:12px; color:var(--dim); margin:0 0 28px; }
+  .row-between a{ color:var(--dim); text-decoration:none; border-bottom:1px solid var(--line); }
+  .row-between a:hover{ color:var(--gold-bright); }
+  .checkbox{ display:flex; align-items:center; gap:7px; }
+  .checkbox input{ accent-color:var(--gold); width:13px; height:13px; }
+
+  button.enter{ position:relative; width:100%; background:var(--gold); border:none; color:#171008; font-weight:600; font-size:13.5px; letter-spacing:.02em; padding:14px; cursor:pointer; overflow:hidden; transition:filter .3s ease, transform .1s ease; }
+  button.enter:hover{ filter:brightness(1.1); }
+  button.enter:active{ transform:scale(.99); }
+  button.enter::after{ content:""; position:absolute; top:0; left:-60%; width:40%; height:100%; background:linear-gradient(120deg, transparent, rgba(255,255,255,.4), transparent); transform:skewX(-20deg); transition:left .6s ease; }
+  button.enter:hover::after{ left:120%; }
+
+  .divider{ display:flex; align-items:center; gap:14px; margin:24px 0; color:var(--dim); font-size:11px; }
+  .divider::before,.divider::after{ content:""; flex:1; height:1px; background:var(--line); }
+  button.ghost{ width:100%; background:none; border:1px solid var(--line); color:var(--cream); font-size:13px; padding:12px; cursor:pointer; transition:border-color .2s ease; }
+  button.ghost:hover{ border-color:var(--gold); }
+
+  .foot{ text-align:center; font-size:12.5px; color:var(--dim); margin-top:22px; }
+  .foot a{ color:var(--gold-bright); text-decoration:none; cursor:pointer; }
+  .foot a:hover{ text-decoration:underline; }
+  :focus-visible{ outline:1px solid var(--gold-bright); outline-offset:2px; }
+  @media (prefers-reduced-motion: reduce){ *{ animation-duration:.01ms !important; transition-duration:.01ms !important; } }
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="dial-wrap">
+    <svg class="dial" viewBox="0 0 76 76">
+      <circle cx="38" cy="38" r="34"/>
+      <circle cx="38" cy="38" r="27"/>
+      <g class="tick">
+        <line x1="38" y1="6" x2="38" y2="12"/>
+        <line x1="38" y1="64" x2="38" y2="70"/>
+        <line x1="6" y1="38" x2="12" y2="38"/>
+        <line x1="64" y1="38" x2="70" y2="38"/>
+      </g>
+      <line class="pointer" x1="38" y1="38" x2="38" y2="16"/>
+      <circle cx="38" cy="38" r="2.4" fill="#e7cb8a" stroke="none"/>
+    </svg>
+  </div>
+
+  <h1 id="heading">The Vault</h1>
+  <p class="sub" id="subhead">Enter your credentials to unlock your holdings.</p>
+
+  <div class="panel">
+    <div class="tabs" id="tabs">
+      <button class="active" data-tab="signin" type="button">Sign in</button>
+      <button data-tab="signup" type="button">Open account</button>
+      <span class="tab-indicator" id="tabIndicator"></span>
+    </div>
+
+    <form onsubmit="return false;">
+      <div class="field extra" id="nameField">
+        <input type="text" placeholder=" " id="nameInput" />
+        <label for="nameInput">Full name</label>
+        <span class="underline-accent"></span>
+      </div>
+      <div class="field">
+        <input type="email" placeholder=" " id="emailInput" required />
+        <label for="emailInput">Email address</label>
+        <span class="underline-accent"></span>
+      </div>
+      <div class="field">
+        <input type="password" placeholder=" " id="pwInput" required />
+        <label for="pwInput">Password</label>
+        <span class="underline-accent"></span>
+      </div>
+      <div class="field extra" id="confirmField">
+        <input type="password" placeholder=" " id="confirmInput" />
+        <label for="confirmInput">Confirm password</label>
+        <span class="underline-accent"></span>
+      </div>
+      <div class="row-between" id="signinOnlyRow">
+        <label class="checkbox"><input type="checkbox" /> Remember me</label>
+        <a href="#">Forgot password?</a>
+      </div>
+      <button class="enter" type="submit"><span id="submitLabel">Unlock</span></button>
+    </form>
+
+    <div class="divider">or continue with</div>
+    <button class="ghost" type="button">Google</button>
+
+    <p class="foot" id="footNote">New here? <a data-switch="signup">Open an account</a></p>
+  </div>
+</div>
+
+<script>
+(function(){
+  var tabs = document.querySelectorAll('#tabs button[data-tab]');
+  var indicator = document.getElementById('tabIndicator');
+  var nameField = document.getElementById('nameField');
+  var confirmField = document.getElementById('confirmField');
+  var signinOnlyRow = document.getElementById('signinOnlyRow');
+  var heading = document.getElementById('heading');
+  var subhead = document.getElementById('subhead');
+  var submitLabel = document.getElementById('submitLabel');
+  var footNote = document.getElementById('footNote');
+
+  var COPY = {
+    signin: { heading:'The Vault', sub:'Enter your credentials to unlock your holdings.', submit:'Unlock', foot:'New here? <a data-switch="signup">Open an account</a>' },
+    signup: { heading:'Open an account', sub:'A minute of setup, then straight in.', submit:'Open account', foot:'Already have an account? <a data-switch="signin">Sign in</a>' }
+  };
+
+  function positionIndicator(el){ indicator.style.transform = 'translateX('+(el.offsetLeft + el.offsetWidth/2 - 2.5)+'px)'; }
+  function bindSwitchLinks(){ document.querySelectorAll('[data-switch]').forEach(function(a){ a.addEventListener('click', function(e){ e.preventDefault(); setMode(a.getAttribute('data-switch')); }); }); }
+
+  function setMode(mode){
+    tabs.forEach(function(t){ t.classList.toggle('active', t.dataset.tab===mode); if(t.dataset.tab===mode) positionIndicator(t); });
+    var showExtra = mode==='signup';
+    [nameField, confirmField].forEach(function(f){ f.style.maxHeight = showExtra ? f.scrollHeight+'px' : '0px'; f.style.opacity = showExtra?1:0; });
+    signinOnlyRow.style.display = mode==='signin' ? 'flex' : 'none';
+    heading.textContent = COPY[mode].heading;
+    subhead.textContent = COPY[mode].sub;
+    submitLabel.textContent = COPY[mode].submit;
+    footNote.innerHTML = COPY[mode].foot;
+    bindSwitchLinks();
+  }
+  tabs.forEach(function(t){ t.addEventListener('click', function(){ setMode(t.dataset.tab); }); });
+  bindSwitchLinks();
+  window.addEventListener('load', function(){ positionIndicator(document.querySelector('#tabs button.active')); });
+  window.addEventListener('message', function(e){ if(e.data && e.data.type==='loginkit-accent'){ document.documentElement.style.setProperty('--gold', e.data.color); } });
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Noctis — Sign In</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0a0f1c; --navy-2:#0f1626; --panel:#121b30; --line:rgba(202,169,104,0.14);
+    --gold:#caa968; --gold-bright:#e8d3a0; --cream:#eef0f7; --dim:#7c869e;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{
+    background:var(--navy); color:var(--cream); font-family:'Inter', sans-serif; -webkit-font-smoothing:antialiased;
+    min-height:100vh; display:grid; grid-template-columns:1.15fr 1fr; overflow:hidden;
+  }
+  @media(max-width:860px){ body{ grid-template-columns:1fr; } .left{ display:none; } }
+
+  /* ---------- left: quote panel with drifting particles ---------- */
+  .left{
+    position:relative; background:linear-gradient(160deg, var(--navy-2), var(--navy)); overflow:hidden;
+    display:flex; flex-direction:column; justify-content:space-between; padding:56px;
+  }
+  .particle{ position:absolute; border-radius:50%; background:var(--gold); opacity:0; animation:twinkle var(--dur) ease-in-out infinite; animation-delay:var(--delay); }
+  @keyframes twinkle{ 0%,100%{ opacity:0; transform:translateY(0) scale(.8);} 50%{ opacity:var(--peak); transform:translateY(-14px) scale(1);} }
+
+  .brand{ font-family:'Playfair Display', serif; font-size:15px; letter-spacing:.1em; color:var(--gold-bright); position:relative; z-index:1;
+    opacity:0; animation:fadeIn .8s ease forwards; animation-delay:.2s; }
+  .quote{ position:relative; z-index:1; max-width:400px; opacity:0; animation:fadeUp .9s cubic-bezier(.16,1,.3,1) forwards; animation-delay:.4s; }
+  .quote p{ font-family:'Playfair Display', serif; font-style:italic; font-size:26px; line-height:1.5; color:var(--cream); }
+  .quote span{ display:block; margin-top:18px; font-size:12.5px; color:var(--dim); font-style:normal; }
+  .foot-mark{ position:relative; z-index:1; font-size:11.5px; color:var(--dim); letter-spacing:.05em;
+    opacity:0; animation:fadeIn .8s ease forwards; animation-delay:.6s; }
+  @keyframes fadeIn{ to{ opacity:1; } }
+  @keyframes fadeUp{ to{ opacity:1; transform:none; } }
+  .quote{ transform:translateY(10px); }
+
+  /* ---------- right: glass form ---------- */
+  .right{ display:flex; align-items:center; justify-content:center; padding:48px; position:relative; }
+  .card{
+    width:100%; max-width:380px; background:rgba(255,255,255,0.03); border:1px solid var(--line); border-radius:4px;
+    padding:44px 38px; backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+    box-shadow:0 40px 80px -30px rgba(0,0,0,.6);
+    opacity:0; transform:translateY(14px) scale(.98); animation:reveal 1s cubic-bezier(.16,1,.3,1) forwards; animation-delay:.15s;
+  }
+  @keyframes reveal{ to{ opacity:1; transform:none; } }
+
+  h1{ font-family:'Playfair Display', serif; font-weight:600; font-size:27px; margin-bottom:8px; }
+  .sub{ font-size:13.5px; color:var(--dim); margin-bottom:30px; }
+
+  .tabs{ position:relative; display:flex; gap:4px; margin-bottom:30px; background:rgba(255,255,255,0.03); border:1px solid var(--line); border-radius:999px; padding:4px; }
+  .tabs button{ position:relative; z-index:2; flex:1; background:none; border:none; color:var(--dim); font-size:12px; font-weight:600; padding:9px 0; cursor:pointer; transition:color .3s ease; border-radius:999px; }
+  .tabs button.active{ color:#101b30; }
+  .tab-indicator{ position:absolute; top:4px; bottom:4px; z-index:1; border-radius:999px; background:var(--gold); box-shadow:0 4px 14px -4px rgba(202,169,104,0.5); transition:transform .45s cubic-bezier(.65,0,.35,1), width .45s cubic-bezier(.65,0,.35,1); }
+
+  .field{ position:relative; margin-bottom:24px; }
+  .field label{ position:absolute; left:14px; top:13px; font-size:14px; color:var(--dim); pointer-events:none; transition:transform .3s cubic-bezier(.4,0,.2,1), font-size .3s ease, color .3s ease; transform-origin:left top; }
+  .field input{ width:100%; background:rgba(255,255,255,0.02); border:1px solid var(--line); color:var(--cream); font-size:14.5px; padding:20px 14px 8px; border-radius:3px; outline:none; transition:border-color .3s ease, background .3s ease; }
+  .field input:focus{ border-color:var(--gold); background:rgba(202,169,104,0.05); }
+  .field input:focus + label, .field input:not(:placeholder-shown) + label{ transform:translateY(-9px); font-size:10.5px; color:var(--gold-bright); }
+  .field input::placeholder{ color:transparent; }
+  .extra{ max-height:0; opacity:0; overflow:hidden; transition:max-height .5s cubic-bezier(.4,0,.2,1), opacity .35s ease; }
+
+  .row-between{ display:flex; justify-content:space-between; font-size:12px; color:var(--dim); margin:-6px 0 26px; }
+  .row-between a{ color:var(--dim); text-decoration:none; border-bottom:1px solid var(--line); }
+  .row-between a:hover{ color:var(--gold-bright); }
+  .checkbox{ display:flex; align-items:center; gap:7px; }
+  .checkbox input{ accent-color:var(--gold); width:13px; height:13px; }
+
+  button.enter{ position:relative; width:100%; background:var(--gold); border:none; color:#171008; font-weight:600; font-size:13.5px; letter-spacing:.02em; padding:14px; border-radius:3px; cursor:pointer; overflow:hidden; transition:filter .3s ease, transform .1s ease; }
+  button.enter:hover{ filter:brightness(1.1); }
+  button.enter:active{ transform:scale(.99); }
+  button.enter::after{ content:""; position:absolute; top:0; left:-60%; width:40%; height:100%; background:linear-gradient(120deg, transparent, rgba(255,255,255,.35), transparent); transform:skewX(-20deg); transition:left .6s ease; }
+  button.enter:hover::after{ left:120%; }
+
+  .divider{ display:flex; align-items:center; gap:14px; margin:24px 0; color:var(--dim); font-size:11px; }
+  .divider::before,.divider::after{ content:""; flex:1; height:1px; background:var(--line); }
+  button.ghost{ width:100%; background:none; border:1px solid var(--line); color:var(--cream); font-size:13px; padding:12px; border-radius:3px; cursor:pointer; transition:border-color .2s ease; }
+  button.ghost:hover{ border-color:var(--gold); }
+  .foot{ text-align:center; font-size:12.5px; color:var(--dim); margin-top:22px; }
+  .foot a{ color:var(--gold-bright); text-decoration:none; cursor:pointer; }
+  :focus-visible{ outline:1px solid var(--gold-bright); outline-offset:2px; }
+  @media (prefers-reduced-motion: reduce){ *{ animation-duration:.01ms !important; transition-duration:.01ms !important; } }
+</style>
+</head>
+<body>
+
+<div class="left" id="leftPanel">
+  <div class="brand">NOCTIS</div>
+  <div class="quote">
+    <p>"The quiet hours are when the real work gets done."</p>
+    <span>— a founder, 2 a.m., three weeks before launch</span>
+  </div>
+  <div class="foot-mark">Encrypted end to end · SOC 2 Type II</div>
+</div>
+
+<div class="right">
+  <div class="card">
+    <h1 id="heading">Sign in to Noctis</h1>
+    <p class="sub" id="subhead">Pick up exactly where the night left off.</p>
+
+    <div class="tabs" id="tabs">
+      <button class="active" data-tab="signin" type="button">Sign in</button>
+      <button data-tab="signup" type="button">Create account</button>
+      <span class="tab-indicator" id="tabIndicator"></span>
+    </div>
+
+    <form onsubmit="return false;">
+      <div class="field extra" id="nameField">
+        <input type="text" placeholder=" " id="nameInput" />
+        <label for="nameInput">Full name</label>
+      </div>
+      <div class="field">
+        <input type="email" placeholder=" " id="emailInput" required />
+        <label for="emailInput">Email address</label>
+      </div>
+      <div class="field">
+        <input type="password" placeholder=" " id="pwInput" required />
+        <label for="pwInput">Password</label>
+      </div>
+      <div class="field extra" id="confirmField">
+        <input type="password" placeholder=" " id="confirmInput" />
+        <label for="confirmInput">Confirm password</label>
+      </div>
+      <div class="row-between" id="signinOnlyRow">
+        <label class="checkbox"><input type="checkbox" /> Remember me</label>
+        <a href="#">Forgot password?</a>
+      </div>
+      <button class="enter" type="submit"><span id="submitLabel">Sign in</span></button>
+    </form>
+
+    <div class="divider">or continue with</div>
+    <button class="ghost" type="button">Google</button>
+
+    <p class="foot" id="footNote">New here? <a data-switch="signup">Create an account</a></p>
+  </div>
+</div>
+
+<script>
+(function(){
+  // scatter drifting particles across the left panel
+  var left = document.getElementById('leftPanel');
+  for(var i=0;i<26;i++){
+    var d = document.createElement('div');
+    d.className = 'particle';
+    var size = 1 + Math.random()*2;
+    d.style.width = size+'px'; d.style.height = size+'px';
+    d.style.left = Math.random()*100+'%'; d.style.top = Math.random()*100+'%';
+    d.style.setProperty('--dur', (4+Math.random()*5).toFixed(1)+'s');
+    d.style.setProperty('--delay', (Math.random()*6).toFixed(1)+'s');
+    d.style.setProperty('--peak', (0.35+Math.random()*0.45).toFixed(2));
+    left.appendChild(d);
+  }
+
+  var tabs = document.querySelectorAll('#tabs button[data-tab]');
+  var indicator = document.getElementById('tabIndicator');
+  var nameField = document.getElementById('nameField');
+  var confirmField = document.getElementById('confirmField');
+  var signinOnlyRow = document.getElementById('signinOnlyRow');
+  var heading = document.getElementById('heading');
+  var subhead = document.getElementById('subhead');
+  var submitLabel = document.getElementById('submitLabel');
+  var footNote = document.getElementById('footNote');
+
+  var COPY = {
+    signin: { heading:'Sign in to Noctis', sub:'Pick up exactly where the night left off.', submit:'Sign in', foot:'New here? <a data-switch="signup">Create an account</a>' },
+    signup: { heading:'Create your account', sub:'A minute of setup, then straight to work.', submit:'Create account', foot:'Already have an account? <a data-switch="signin">Sign in</a>' }
+  };
+
+  function positionIndicator(el){ indicator.style.width = el.offsetWidth+'px'; indicator.style.transform = 'translateX('+el.offsetLeft+'px)'; }
+  function bindSwitchLinks(){ document.querySelectorAll('[data-switch]').forEach(function(a){ a.addEventListener('click', function(e){ e.preventDefault(); setMode(a.getAttribute('data-switch')); }); }); }
+
+  function setMode(mode){
+    tabs.forEach(function(t){ t.classList.toggle('active', t.dataset.tab===mode); if(t.dataset.tab===mode) positionIndicator(t); });
+    var showExtra = mode==='signup';
+    [nameField, confirmField].forEach(function(f){ f.style.maxHeight = showExtra ? f.scrollHeight+'px' : '0px'; f.style.opacity = showExtra?1:0; });
+    signinOnlyRow.style.display = mode==='signin' ? 'flex' : 'none';
+    heading.textContent = COPY[mode].heading;
+    subhead.textContent = COPY[mode].sub;
+    submitLabel.textContent = COPY[mode].submit;
+    footNote.innerHTML = COPY[mode].foot;
+    bindSwitchLinks();
+  }
+  tabs.forEach(function(t){ t.addEventListener('click', function(){ setMode(t.dataset.tab); }); });
+  bindSwitchLinks();
+  window.addEventListener('load', function(){ positionIndicator(document.querySelector('#tabs button.active')); });
+  window.addEventListener('message', function(e){ if(e.data && e.data.type==='loginkit-accent'){ document.documentElement.style.setProperty('--gold', e.data.color); } });
+})();
+</script>
+
+</body>
+</html>
