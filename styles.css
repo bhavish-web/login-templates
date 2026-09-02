@@ -203,6 +203,9 @@ body.has-compare-bar{padding-bottom:74px;}
 
 /* ---------- footer ---------- */
 .site-footer{border-top:1px solid var(--line); padding:28px 0; font-size:12px; color:var(--dim); font-family:var(--mono); transition:border-color .3s ease; letter-spacing:.03em;}
+.footer-row{display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;}
+.footer-row a{color:var(--gold-bright); text-decoration:none; border-bottom:1px solid transparent; transition:border-color .2s ease;}
+.footer-row a:hover{border-color:var(--gold-bright);}
 
 /* ---------- modal ---------- */
 .modal-backdrop{
