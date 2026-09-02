@@ -12,25 +12,6 @@
   const state = { query: '', layout: null, palette: null, favoritesOnly: false };
   const compareSet = new Set();
 
-  // ---------------- theme ----------------
-  const THEME_KEY = 'loginkit-theme';
-  function applyTheme(theme){
-    document.documentElement.setAttribute('data-theme', theme);
-    try{ localStorage.setItem(THEME_KEY, theme); }catch(e){}
-  }
-  (function initTheme(){
-    let saved = null;
-    try{ saved = localStorage.getItem(THEME_KEY); }catch(e){}
-    if(!saved){
-      saved = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    }
-    applyTheme(saved);
-  })();
-  document.getElementById('theme-toggle').addEventListener('click', () => {
-    const current = document.documentElement.getAttribute('data-theme');
-    applyTheme(current === 'dark' ? 'light' : 'dark');
-  });
-
   // ---------------- favorites ----------------
   const FAV_KEY = 'loginkit-favorites';
   function getFavorites(){
