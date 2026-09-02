@@ -403,3 +403,188 @@
 
   render();
 })();
+
+/* ================= crazy mode ================= */
+(function(){
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const coarsePointer = window.matchMedia('(hover: none), (pointer: coarse)').matches;
+  const fine = !reduceMotion && !coarsePointer;
+
+  // ---------------- synthesized sound effects (no external assets) ----------------
+  let audioCtx = null;
+  function getCtx(){
+    if(!audioCtx){
+      try{ audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }catch(e){ return null; }
+    }
+    return audioCtx;
+  }
+  function playClink(big){
+    const ctx = getCtx();
+    if(!ctx) return;
+    const now = ctx.currentTime;
+    const freqs = big ? [880, 1318.5, 1760] : [1046.5, 1568];
+    freqs.forEach((f, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = f;
+      gain.gain.setValueAtTime(0, now + i * 0.03);
+      gain.gain.linearRampToValueAtTime(big ? 0.09 : 0.05, now + i * 0.03 + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + i * 0.03 + (big ? 0.5 : 0.3));
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(now + i * 0.03);
+      osc.stop(now + i * 0.03 + (big ? 0.55 : 0.35));
+    });
+  }
+  document.addEventListener('click', (e) => {
+    if(e.target.closest('[data-action="preview"], [data-action="code"]')) playClink(false);
+    const fav = e.target.closest('.fav-btn, #modal-fav');
+    if(fav) playClink(false);
+  });
+
+  // ---------------- custom cursor ----------------
+  if(fine){
+    document.documentElement.classList.add('cursor-active');
+    const dot = document.getElementById('cursorDot');
+    const ring = document.getElementById('cursorRing');
+    let mx = window.innerWidth/2, my = window.innerHeight/2, rx = mx, ry = my;
+    document.addEventListener('mousemove', (e) => { mx = e.clientX; my = e.clientY; dot.style.transform = `translate(${mx}px, ${my}px)`; });
+    (function ringLoop(){
+      rx += (mx - rx) * 0.18; ry += (my - ry) * 0.18;
+      ring.style.transform = `translate(${rx}px, ${ry}px)`;
+      requestAnimationFrame(ringLoop);
+    })();
+    document.addEventListener('mouseover', (e) => {
+      if(e.target.closest('a, button, .card, input')) ring.classList.add('hovering');
+    });
+    document.addEventListener('mouseout', (e) => {
+      if(e.target.closest('a, button, .card, input')) ring.classList.remove('hovering');
+    });
+  }
+
+  // ---------------- card 3D tilt + shine ----------------
+  const grid = document.getElementById('card-grid');
+  if(grid){
+    grid.addEventListener('mousemove', (e) => {
+      const card = e.target.closest('.card');
+      if(!card) return;
+      const r = card.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width;
+      const py = (e.clientY - r.top) / r.height;
+      const rotY = (px - 0.5) * 14;
+      const rotX = (0.5 - py) * 14;
+      card.style.setProperty('--rx', rotX.toFixed(2) + 'deg');
+      card.style.setProperty('--ry', rotY.toFixed(2) + 'deg');
+      card.style.setProperty('--mx', (px * 100).toFixed(1) + '%');
+      card.style.setProperty('--my', (py * 100).toFixed(1) + '%');
+    });
+    grid.addEventListener('mouseleave', (e) => {
+      grid.querySelectorAll('.card').forEach(c => { c.style.setProperty('--rx', '0deg'); c.style.setProperty('--ry', '0deg'); });
+    }, true);
+  }
+
+  // ---------------- mouse-reactive hero glow ----------------
+  const hero = document.querySelector('.hero');
+  if(hero && fine){
+    hero.addEventListener('mousemove', (e) => {
+      const r = hero.getBoundingClientRect();
+      hero.style.setProperty('--hx', (e.clientX - r.left) + 'px');
+      hero.style.setProperty('--hy', (e.clientY - r.top) + 'px');
+    });
+  }
+
+  // ---------------- gold-dust sparkle trail ----------------
+  if(fine){
+    const canvas = document.getElementById('sparkle-canvas');
+    const ctx2d = canvas.getContext('2d');
+    let W = canvas.width = window.innerWidth, H = canvas.height = window.innerHeight;
+    window.addEventListener('resize', () => { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; });
+    let particles = [];
+    let lastSpawn = 0;
+    document.addEventListener('mousemove', (e) => {
+      const t = performance.now();
+      if(t - lastSpawn < 45) return;
+      lastSpawn = t;
+      particles.push({
+        x: e.clientX, y: e.clientY,
+        vx: (Math.random() - 0.5) * 0.4, vy: -Math.random() * 0.6 - 0.2,
+        r: Math.random() * 1.6 + 0.6, life: 1,
+      });
+      if(particles.length > 140) particles.splice(0, particles.length - 140);
+    });
+    (function particleLoop(){
+      ctx2d.clearRect(0, 0, W, H);
+      particles.forEach(p => {
+        p.x += p.vx; p.y += p.vy; p.life -= 0.018;
+        ctx2d.globalAlpha = Math.max(p.life, 0);
+        ctx2d.fillStyle = '#e7cb8a';
+        ctx2d.beginPath();
+        ctx2d.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx2d.fill();
+      });
+      particles = particles.filter(p => p.life > 0);
+      ctx2d.globalAlpha = 1;
+      requestAnimationFrame(particleLoop);
+    })();
+  }
+
+  // ---------------- gold rush event ----------------
+  const rushLayer = document.getElementById('goldRush');
+  const toastEl = document.getElementById('toast');
+  let toastTimer = null;
+  function showToast(msg){
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2600);
+  }
+  function goldRush(){
+    playClink(true);
+    showToast('✦ The Vault is open ✦');
+    const flash = document.createElement('div');
+    flash.className = 'rush-flash';
+    document.body.appendChild(flash);
+    setTimeout(() => flash.remove(), 1200);
+    const count = reduceMotion ? 0 : 70;
+    for(let i = 0; i < count; i++){
+      const piece = document.createElement('div');
+      piece.className = 'rush-piece';
+      const left = Math.random() * 100;
+      const dur = 2.2 + Math.random() * 1.8;
+      const delay = Math.random() * 0.6;
+      const size = 6 + Math.random() * 8;
+      piece.style.left = left + 'vw';
+      piece.style.width = size + 'px';
+      piece.style.height = size + 'px';
+      piece.style.animationDuration = dur + 's';
+      piece.style.animationDelay = delay + 's';
+      rushLayer.appendChild(piece);
+      setTimeout(() => piece.remove(), (dur + delay) * 1000 + 200);
+    }
+  }
+
+  // Konami code
+  const KONAMI = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+  let konamiIndex = 0;
+  document.addEventListener('keydown', (e) => {
+    const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+    if(key === KONAMI[konamiIndex]){
+      konamiIndex++;
+      if(konamiIndex === KONAMI.length){ konamiIndex = 0; goldRush(); }
+    } else {
+      konamiIndex = (key === KONAMI[0]) ? 1 : 0;
+    }
+  });
+
+  // logo click easter egg (5 rapid clicks)
+  const logo = document.getElementById('logoMark');
+  if(logo){
+    let clicks = 0, clickTimer = null;
+    logo.addEventListener('click', () => {
+      clicks++;
+      clearTimeout(clickTimer);
+      clickTimer = setTimeout(() => { clicks = 0; }, 900);
+      if(clicks >= 5){ clicks = 0; goldRush(); }
+    });
+  }
+})();
