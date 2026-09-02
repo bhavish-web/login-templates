@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cellar No. 9 — Member Sign In</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#150a0c; --card:#1c0f12; --line:rgba(196,124,90,0.16); --cork:#c47c5a; --cork-bright:#e2a37c;
+    --cream:#efe4dc; --dim:#8f7a72;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{
+    background:var(--ink); color:var(--cream); font-family:'Inter', sans-serif; -webkit-font-smoothing:antialiased;
+    min-height:100vh; display:flex; align-items:center; justify-content:center; padding:60px 24px; position:relative; overflow:hidden;
+  }
+
+  .candle-glow{
+    position:fixed; top:50%; left:50%; width:640px; height:640px; transform:translate(-50%,-50%); border-radius:50%;
+    background:radial-gradient(circle, rgba(196,124,90,0.16), transparent 70%);
+    animation:flicker 5s ease-in-out infinite;
+  }
+  @keyframes flicker{
+    0%,100%{ opacity:1; transform:translate(-50%,-50%) scale(1); }
+    18%{ opacity:.85; transform:translate(-50%,-50%) scale(.98); }
+    36%{ opacity:1; transform:translate(-50%,-50%) scale(1.02); }
+    52%{ opacity:.9; transform:translate(-50%,-50%) scale(.99); }
+    74%{ opacity:1; transform:translate(-50%,-50%) scale(1.01); }
+  }
+
+  .stage{ position:relative; z-index:1; width:100%; max-width:380px; text-align:center;
+    opacity:0; transform:translateY(14px); animation:reveal .9s cubic-bezier(.16,1,.3,1) forwards; animation-delay:.2s; }
+  @keyframes reveal{ to{ opacity:1; transform:none; } }
+
+  .tag{ display:inline-block; border:1px solid var(--line); border-radius:999px; padding:6px 16px; font-size:11px; letter-spacing:.1em; color:var(--cork); margin-bottom:22px; }
+  h1{ font-family:'Cormorant Garamond', serif; font-weight:500; font-style:italic; font-size:31px; margin-bottom:8px; }
+  .sub{ font-size:13.5px; color:var(--dim); margin-bottom:34px; }
+
+  .panel{ text-align:left; background:var(--card); border:1px solid var(--line); padding:36px 32px; border-radius:3px; }
+
+  .tabs{ position:relative; display:flex; gap:24px; margin-bottom:28px; border-bottom:1px solid var(--line); }
+  .tabs button{ background:none; border:none; color:var(--dim); font-size:12.5px; font-weight:500; padding:0 0 12px; cursor:pointer; transition:color .3s ease; }
+  .tabs button.active{ color:var(--cork-bright); }
+  .tab-indicator{ position:absolute; bottom:-1px; height:1.5px; background:var(--cork-bright); box-shadow:0 0 8px var(--cork); transition:transform .5s cubic-bezier(.65,0,.35,1), width .5s cubic-bezier(.65,0,.35,1); }
+
+  .field{ position:relative; margin-bottom:24px; }
+  .field label{ position:absolute; left:0; top:11px; font-size:14px; color:var(--dim); pointer-events:none; transition:transform .3s cubic-bezier(.4,0,.2,1), font-size .3s ease, color .3s ease; transform-origin:left top; }
+  .field input{ width:100%; background:none; border:none; border-bottom:1px solid var(--line); color:var(--cream); font-size:15px; padding:10px 0; outline:none; transition:border-color .3s ease; }
+  .field .underline-accent{ position:absolute; left:0; right:0; bottom:-1px; height:1.5px; background:var(--cork-bright); transform:scaleX(0); transition:transform .4s cubic-bezier(.65,0,.35,1); box-shadow:0 0 8px var(--cork); }
+  .field input:focus ~ .underline-accent{ transform:scaleX(1); }
+  .field input:focus{ border-color:transparent; }
+  .field input:focus + label, .field input:not(:placeholder-shown) + label{ transform:translateY(-19px); font-size:11px; color:var(--cork-bright); }
+  .field input::placeholder{ color:transparent; }
+  .extra{ max-height:0; opacity:0; overflow:hidden; transition:max-height .5s cubic-bezier(.4,0,.2,1), opacity .35s ease; }
+
+  .row-between{ display:flex; justify-content:space-between; font-size:12px; color:var(--dim); margin:0 0 28px; }
+  .row-between a{ color:var(--dim); text-decoration:none; border-bottom:1px solid var(--line); }
+  .row-between a:hover{ color:var(--cork-bright); }
+  .checkbox{ display:flex; align-items:center; gap:7px; }
+  .checkbox input{ accent-color:var(--cork); width:13px; height:13px; }
+
+  button.enter{ position:relative; width:100%; background:transparent; border:1px solid var(--cork); color:var(--cork-bright);
+    font-family:'Cormorant Garamond', serif; font-style:italic; font-size:18px; padding:14px; cursor:pointer; overflow:hidden; isolation:isolate; transition:color .5s ease; }
+  button.enter::before{ content:""; position:absolute; inset:0; background:linear-gradient(100deg, var(--cork), var(--cork-bright)); transform:translateX(-100%); transition:transform .5s cubic-bezier(.65,0,.35,1); z-index:-1; }
+  button.enter:hover{ color:#1c0f12; }
+  button.enter:hover::before{ transform:translateX(0); }
+  button.enter:active{ transform:scale(.99); }
+
+  .divider{ display:flex; align-items:center; gap:14px; margin:24px 0; color:var(--dim); font-size:11px; }
+  .divider::before,.divider::after{ content:""; flex:1; height:1px; background:var(--line); }
+  button.ghost{ width:100%; background:none; border:1px solid var(--line); color:var(--cream); font-size:13px; padding:12px; cursor:pointer; transition:border-color .2s ease; }
+  button.ghost:hover{ border-color:var(--cork); }
+
+  .foot{ text-align:center; font-size:12.5px; color:var(--dim); margin-top:22px; }
+  .foot a{ color:var(--cork-bright); text-decoration:none; cursor:pointer; }
+  .foot a:hover{ text-decoration:underline; }
+  :focus-visible{ outline:1px solid var(--cork-bright); outline-offset:2px; }
+  @media (prefers-reduced-motion: reduce){ *{ animation-duration:.01ms !important; transition-duration:.01ms !important; } }
+</style>
+</head>
+<body>
+
+<div class="candle-glow"></div>
+
+<div class="stage">
+  <div class="tag">CELLAR No. 9</div>
+  <h1 id="heading">Welcome back</h1>
+  <p class="sub" id="subhead">Your reserve list and tasting notes.</p>
+
+  <div class="panel">
+    <div class="tabs" id="tabs">
+      <button class="active" data-tab="signin" type="button">Sign in</button>
+      <button data-tab="signup" type="button">Join the list</button>
+      <span class="tab-indicator" id="tabIndicator"></span>
+    </div>
+
+    <form onsubmit="return false;">
+      <div class="field extra" id="nameField">
+        <input type="text" placeholder=" " id="nameInput" />
+        <label for="nameInput">Full name</label>
+        <span class="underline-accent"></span>
+      </div>
+      <div class="field">
+        <input type="email" placeholder=" " id="emailInput" required />
+        <label for="emailInput">Email address</label>
+        <span class="underline-accent"></span>
+      </div>
+      <div class="field">
+        <input type="password" placeholder=" " id="pwInput" required />
+        <label for="pwInput">Password</label>
+        <span class="underline-accent"></span>
+      </div>
+      <div class="field extra" id="confirmField">
+        <input type="password" placeholder=" " id="confirmInput" />
+        <label for="confirmInput">Confirm password</label>
+        <span class="underline-accent"></span>
+      </div>
+      <div class="row-between" id="signinOnlyRow">
+        <label class="checkbox"><input type="checkbox" /> Remember me</label>
+        <a href="#">Forgot password?</a>
+      </div>
+      <button class="enter" type="submit"><span id="submitLabel">Enter</span></button>
+    </form>
+
+    <div class="divider">or continue with</div>
+    <button class="ghost" type="button">Google</button>
+
+    <p class="foot" id="footNote">New here? <a data-switch="signup">Join the list</a></p>
+  </div>
+</div>
+
+<script>
+(function(){
+  var tabs = document.querySelectorAll('#tabs button[data-tab]');
+  var indicator = document.getElementById('tabIndicator');
+  var nameField = document.getElementById('nameField');
+  var confirmField = document.getElementById('confirmField');
+  var signinOnlyRow = document.getElementById('signinOnlyRow');
+  var heading = document.getElementById('heading');
+  var subhead = document.getElementById('subhead');
+  var submitLabel = document.getElementById('submitLabel');
+  var footNote = document.getElementById('footNote');
+
+  var COPY = {
+    signin: { heading:'Welcome back', sub:'Your reserve list and tasting notes.', submit:'Enter', foot:'New here? <a data-switch="signup">Join the list</a>' },
+    signup: { heading:'Join the list', sub:'Get first access to limited releases.', submit:'Join the list', foot:'Already on the list? <a data-switch="signin">Sign in</a>' }
+  };
+
+  function positionIndicator(el){ indicator.style.width = el.offsetWidth+'px'; indicator.style.transform = 'translateX('+el.offsetLeft+'px)'; }
+  function bindSwitchLinks(){ document.querySelectorAll('[data-switch]').forEach(function(a){ a.addEventListener('click', function(e){ e.preventDefault(); setMode(a.getAttribute('data-switch')); }); }); }
+
+  function setMode(mode){
+    tabs.forEach(function(t){ t.classList.toggle('active', t.dataset.tab===mode); if(t.dataset.tab===mode) positionIndicator(t); });
+    var showExtra = mode==='signup';
+    [nameField, confirmField].forEach(function(f){ f.style.maxHeight = showExtra ? f.scrollHeight+'px' : '0px'; f.style.opacity = showExtra?1:0; });
+    signinOnlyRow.style.display = mode==='signin' ? 'flex' : 'none';
+    heading.textContent = COPY[mode].heading;
+    subhead.textContent = COPY[mode].sub;
+    submitLabel.textContent = COPY[mode].submit;
+    footNote.innerHTML = COPY[mode].foot;
+    bindSwitchLinks();
+  }
+  tabs.forEach(function(t){ t.addEventListener('click', function(){ setMode(t.dataset.tab); }); });
+  bindSwitchLinks();
+  window.addEventListener('load', function(){ positionIndicator(document.querySelector('#tabs button.active')); });
+  window.addEventListener('message', function(e){ if(e.data && e.data.type==='loginkit-accent'){ document.documentElement.style.setProperty('--cork', e.data.color); } });
+})();
+</script>
+
+</body>
+</html>

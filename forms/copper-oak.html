@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Copper &amp; Oak — Suite Access</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --stone:#efe7d8; --card:#fffdf9; --ink:#241a12; --dim:#7c6c56; --copper:#a85a2e; --copper-bright:#c97a4a;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{
+    background:var(--stone); color:var(--ink); font-family:'Inter', sans-serif; -webkit-font-smoothing:antialiased;
+    min-height:100vh; display:flex; align-items:center; justify-content:center; padding:60px 24px;
+  }
+
+  .frame{ position:relative; width:100%; max-width:420px; padding:54px 44px 44px;
+    opacity:0; animation:fadeIn .6s ease forwards; animation-delay:.5s; }
+  @keyframes fadeIn{ to{ opacity:1; } }
+
+  .frame-line{ position:absolute; background:var(--copper); }
+  .fl-top{ top:0; left:0; height:1.5px; width:0; animation:growX .6s cubic-bezier(.65,0,.35,1) forwards; animation-delay:0s; }
+  .fl-right{ top:0; right:0; width:1.5px; height:0; animation:growY .6s cubic-bezier(.65,0,.35,1) forwards; animation-delay:.6s; }
+  .fl-bottom{ bottom:0; right:0; height:1.5px; width:0; animation:growXr .6s cubic-bezier(.65,0,.35,1) forwards; animation-delay:1.2s; }
+  .fl-left{ bottom:0; left:0; width:1.5px; height:0; animation:growYr .6s cubic-bezier(.65,0,.35,1) forwards; animation-delay:1.8s; }
+  @keyframes growX{ from{width:0;} to{width:100%;} }
+  @keyframes growXr{ from{width:0;} to{width:100%;} }
+  @keyframes growY{ from{height:0;} to{height:100%;} }
+  @keyframes growYr{ from{height:0;} to{height:100%;} }
+
+  .suite-no{ font-size:11px; letter-spacing:.14em; color:var(--copper); margin-bottom:16px;
+    opacity:0; animation:fadeUp .7s cubic-bezier(.16,1,.3,1) forwards; animation-delay:.15s; }
+  h1{ font-family:'Fraunces', serif; font-weight:600; font-size:28px; line-height:1.15; margin-bottom:8px;
+    opacity:0; animation:fadeUp .7s cubic-bezier(.16,1,.3,1) forwards; animation-delay:.22s; }
+  .sub{ font-size:13.5px; color:var(--dim); margin-bottom:32px;
+    opacity:0; animation:fadeUp .7s cubic-bezier(.16,1,.3,1) forwards; animation-delay:.28s; }
+  @keyframes fadeUp{ to{ opacity:1; transform:none; } }
+  h1, .sub, .suite-no{ transform:translateY(8px); }
+
+  .tabs{ position:relative; display:flex; gap:24px; margin-bottom:30px; border-bottom:1px solid rgba(36,26,18,0.12);
+    opacity:0; animation:fadeUp .7s cubic-bezier(.16,1,.3,1) forwards; animation-delay:.34s; }
+  .tabs button{ background:none; border:none; color:var(--dim); font-size:12.5px; font-weight:600; padding:0 0 12px; cursor:pointer; transition:color .3s ease; text-transform:uppercase; letter-spacing:.03em; }
+  .tabs button.active{ color:var(--copper); }
+  .tab-indicator{ position:absolute; bottom:-1px; height:2px; background:var(--copper); transition:transform .5s cubic-bezier(.65,0,.35,1), width .5s cubic-bezier(.65,0,.35,1); }
+
+  form{ opacity:0; animation:fadeUp .7s cubic-bezier(.16,1,.3,1) forwards; animation-delay:.4s; }
+
+  .field{ position:relative; margin-bottom:24px; }
+  .field label{ position:absolute; left:0; top:11px; font-size:14px; color:var(--dim); pointer-events:none; transition:transform .3s cubic-bezier(.4,0,.2,1), font-size .3s ease, color .3s ease; transform-origin:left top; }
+  .field input{ width:100%; background:none; border:none; border-bottom:1px solid rgba(36,26,18,0.18); color:var(--ink); font-size:15px; padding:10px 0; outline:none; transition:border-color .3s ease; }
+  .field .underline-accent{ position:absolute; left:0; right:0; bottom:-1px; height:1.5px; background:var(--copper); transform:scaleX(0); transition:transform .4s cubic-bezier(.65,0,.35,1); }
+  .field input:focus ~ .underline-accent{ transform:scaleX(1); }
+  .field input:focus{ border-color:transparent; }
+  .field input:focus + label, .field input:not(:placeholder-shown) + label{ transform:translateY(-19px); font-size:11px; color:var(--copper); }
+  .field input::placeholder{ color:transparent; }
+  .extra{ max-height:0; opacity:0; overflow:hidden; transition:max-height .5s cubic-bezier(.4,0,.2,1), opacity .35s ease; }
+
+  .row-between{ display:flex; justify-content:space-between; font-size:12px; color:var(--dim); margin:0 0 28px; }
+  .row-between a{ color:var(--dim); text-decoration:none; border-bottom:1px solid rgba(36,26,18,0.18); }
+  .row-between a:hover{ color:var(--copper); }
+  .checkbox{ display:flex; align-items:center; gap:7px; }
+  .checkbox input{ accent-color:var(--copper); width:13px; height:13px; }
+
+  button.enter{ position:relative; width:100%; background:var(--ink); border:none; color:var(--stone);
+    font-size:13.5px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; padding:15px; cursor:pointer; overflow:hidden; transition:transform .1s ease; }
+  button.enter::before{ content:""; position:absolute; inset:0; background:var(--copper); transform:translateX(-100%); transition:transform .45s cubic-bezier(.65,0,.35,1); }
+  button.enter span{ position:relative; }
+  button.enter:hover::before{ transform:translateX(0); }
+  button.enter:active{ transform:scale(.99); }
+
+  .divider{ display:flex; align-items:center; gap:14px; margin:24px 0; color:var(--dim); font-size:11px; }
+  .divider::before,.divider::after{ content:""; flex:1; height:1px; background:rgba(36,26,18,0.12); }
+  button.ghost{ width:100%; background:none; border:1px solid rgba(36,26,18,0.18); color:var(--ink); font-size:13px; padding:12px; cursor:pointer; transition:border-color .2s ease; }
+  button.ghost:hover{ border-color:var(--copper); }
+
+  .foot{ text-align:center; font-size:12.5px; color:var(--dim); margin-top:22px; }
+  .foot a{ color:var(--copper); text-decoration:none; cursor:pointer; font-weight:600; }
+  .foot a:hover{ text-decoration:underline; }
+  :focus-visible{ outline:1px solid var(--copper); outline-offset:2px; }
+  @media (prefers-reduced-motion: reduce){ *{ animation-duration:.01ms !important; transition-duration:.01ms !important; } }
+</style>
+</head>
+<body>
+
+<div class="frame">
+  <div class="frame-line fl-top"></div>
+  <div class="frame-line fl-right"></div>
+  <div class="frame-line fl-bottom"></div>
+  <div class="frame-line fl-left"></div>
+
+  <div class="suite-no">SUITE No. 04 · MEMBER ENTRANCE</div>
+  <h1 id="heading">Welcome back</h1>
+  <p class="sub" id="subhead">Your workshop, your commissions, your ledger.</p>
+
+  <div class="tabs" id="tabs">
+    <button class="active" data-tab="signin" type="button">Sign in</button>
+    <button data-tab="signup" type="button">Register</button>
+    <span class="tab-indicator" id="tabIndicator"></span>
+  </div>
+
+  <form onsubmit="return false;">
+    <div class="field extra" id="nameField">
+      <input type="text" placeholder=" " id="nameInput" />
+      <label for="nameInput">Full name</label>
+      <span class="underline-accent"></span>
+    </div>
+    <div class="field">
+      <input type="email" placeholder=" " id="emailInput" required />
+      <label for="emailInput">Email address</label>
+      <span class="underline-accent"></span>
+    </div>
+    <div class="field">
+      <input type="password" placeholder=" " id="pwInput" required />
+      <label for="pwInput">Password</label>
+      <span class="underline-accent"></span>
+    </div>
+    <div class="field extra" id="confirmField">
+      <input type="password" placeholder=" " id="confirmInput" />
+      <label for="confirmInput">Confirm password</label>
+      <span class="underline-accent"></span>
+    </div>
+    <div class="row-between" id="signinOnlyRow">
+      <label class="checkbox"><input type="checkbox" /> Remember me</label>
+      <a href="#">Forgot password?</a>
+    </div>
+    <button class="enter" type="submit"><span id="submitLabel">Sign in</span></button>
+  </form>
+
+  <div class="divider">or continue with</div>
+  <button class="ghost" type="button">Google</button>
+
+  <p class="foot" id="footNote">New to the workshop? <a data-switch="signup">Register</a></p>
+</div>
+
+<script>
+(function(){
+  var tabs = document.querySelectorAll('#tabs button[data-tab]');
+  var indicator = document.getElementById('tabIndicator');
+  var nameField = document.getElementById('nameField');
+  var confirmField = document.getElementById('confirmField');
+  var signinOnlyRow = document.getElementById('signinOnlyRow');
+  var heading = document.getElementById('heading');
+  var subhead = document.getElementById('subhead');
+  var submitLabel = document.getElementById('submitLabel');
+  var footNote = document.getElementById('footNote');
+
+  var COPY = {
+    signin: { heading:'Welcome back', sub:'Your workshop, your commissions, your ledger.', submit:'Sign in', foot:'New to the workshop? <a data-switch="signup">Register</a>' },
+    signup: { heading:'Register your account', sub:'Set up your workshop profile in a minute.', submit:'Register', foot:'Already registered? <a data-switch="signin">Sign in</a>' }
+  };
+
+  function positionIndicator(el){ indicator.style.width = el.offsetWidth+'px'; indicator.style.transform = 'translateX('+el.offsetLeft+'px)'; }
+  function bindSwitchLinks(){ document.querySelectorAll('[data-switch]').forEach(function(a){ a.addEventListener('click', function(e){ e.preventDefault(); setMode(a.getAttribute('data-switch')); }); }); }
+
+  function setMode(mode){
+    tabs.forEach(function(t){ t.classList.toggle('active', t.dataset.tab===mode); if(t.dataset.tab===mode) positionIndicator(t); });
+    var showExtra = mode==='signup';
+    [nameField, confirmField].forEach(function(f){ f.style.maxHeight = showExtra ? f.scrollHeight+'px' : '0px'; f.style.opacity = showExtra?1:0; });
+    signinOnlyRow.style.display = mode==='signin' ? 'flex' : 'none';
+    heading.textContent = COPY[mode].heading;
+    subhead.textContent = COPY[mode].sub;
+    submitLabel.textContent = COPY[mode].submit;
+    footNote.innerHTML = COPY[mode].foot;
+    bindSwitchLinks();
+  }
+  tabs.forEach(function(t){ t.addEventListener('click', function(){ setMode(t.dataset.tab); }); });
+  bindSwitchLinks();
+  window.addEventListener('load', function(){ positionIndicator(document.querySelector('#tabs button.active')); });
+  window.addEventListener('message', function(e){ if(e.data && e.data.type==='loginkit-accent'){ document.documentElement.style.setProperty('--copper', e.data.color); } });
+})();
+</script>
+
+</body>
+</html>
