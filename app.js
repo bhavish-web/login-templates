@@ -10,6 +10,7 @@
   document.getElementById('stat-count').textContent = FORMS.length;
 
   const state = { query: '', layout: null, palette: null, favoritesOnly: false };
+  const compareSet = new Set();
 
   // ---------------- theme ----------------
   const THEME_KEY = 'loginkit-theme';
@@ -86,8 +87,9 @@
 
   function cardHTML(f){
     const fav = isFavorite(f.id);
+    const cmp = compareSet.has(f.id);
     return `
-      <div class="card" data-id="${f.id}">
+      <div class="card" data-id="${f.id}" tabindex="-1">
         <div class="card-preview" data-action="preview" data-id="${f.id}">
           <span class="num">${String(f.n).padStart(2,'0')}</span>
           <button class="fav-btn${fav ? ' active' : ''}" data-action="fav" data-id="${f.id}" aria-label="Favorite" title="Favorite">
@@ -102,6 +104,7 @@
           <div class="card-actions">
             <button data-action="preview" data-id="${f.id}">Preview</button>
             <button class="primary" data-action="code" data-id="${f.id}">Code</button>
+            <button class="compare-btn${cmp ? ' active' : ''}" data-action="compare" data-id="${f.id}" title="Add to compare">⇄</button>
           </div>
         </div>
       </div>
@@ -132,6 +135,7 @@
     grid.innerHTML = results.map(cardHTML).join('');
     emptyState.hidden = results.length !== 0;
     setupLazyIframes();
+    kbdIndex = -1;
   }
 
   searchInput.addEventListener('input', (e) => { state.query = e.target.value; render(); });
@@ -153,10 +157,82 @@
       if(state.favoritesOnly) render();
       return;
     }
+    const cmpBtn = e.target.closest('[data-action="compare"]');
+    if(cmpBtn){
+      e.stopPropagation();
+      toggleCompare(cmpBtn.dataset.id, cmpBtn);
+      return;
+    }
     const btn = e.target.closest('[data-action]');
     if(!btn) return;
     openModal(btn.dataset.id, btn.dataset.action);
   });
+
+  // ---------------- compare ----------------
+  const compareBar = document.getElementById('compare-bar');
+  const compareSlots = document.getElementById('compare-slots');
+  const compareCount = document.getElementById('compare-count');
+  const compareBackdrop = document.getElementById('compare-backdrop');
+  const compareGrid = document.getElementById('compare-grid');
+
+  function toggleCompare(id, btnEl){
+    if(compareSet.has(id)){
+      compareSet.delete(id);
+    } else {
+      if(compareSet.size >= 3){
+        compareSet.delete([...compareSet][0]);
+      }
+      compareSet.add(id);
+    }
+    if(btnEl) btnEl.classList.toggle('active', compareSet.has(id));
+    const cardEl = grid.querySelector(`.card[data-id="${id}"]`);
+    if(cardEl) cardEl.classList.toggle('compare-selected', compareSet.has(id));
+    renderCompareBar();
+  }
+
+  function renderCompareBar(){
+    compareCount.textContent = compareSet.size;
+    document.body.classList.toggle('has-compare-bar', compareSet.size > 0);
+    compareBar.hidden = compareSet.size === 0;
+    compareSlots.innerHTML = [...compareSet].map(id => {
+      const f = FORMS.find(x => x.id === id);
+      return `<span class="compare-slot">${f ? f.title : id}<button data-remove="${id}" aria-label="Remove">✕</button></span>`;
+    }).join('');
+  }
+  compareSlots.addEventListener('click', (e) => {
+    const rm = e.target.closest('[data-remove]');
+    if(!rm) return;
+    const id = rm.dataset.remove;
+    compareSet.delete(id);
+    const cardEl = grid.querySelector(`.card[data-id="${id}"]`);
+    if(cardEl) cardEl.classList.remove('compare-selected');
+    const btnEl = grid.querySelector(`.compare-btn[data-id="${id}"]`);
+    if(btnEl) btnEl.classList.remove('active');
+    renderCompareBar();
+  });
+  document.getElementById('compare-clear').addEventListener('click', () => {
+    compareSet.forEach(id => {
+      const cardEl = grid.querySelector(`.card[data-id="${id}"]`);
+      if(cardEl) cardEl.classList.remove('compare-selected');
+    });
+    compareSet.clear();
+    grid.querySelectorAll('.compare-btn.active').forEach(b => b.classList.remove('active'));
+    renderCompareBar();
+  });
+  document.getElementById('compare-open').addEventListener('click', () => {
+    if(compareSet.size === 0) return;
+    compareGrid.innerHTML = [...compareSet].map(id => {
+      const f = FORMS.find(x => x.id === id);
+      if(!f) return '';
+      return `<div class="compare-col"><div class="compare-col-header">${f.title}</div><iframe src="${f.file}" tabindex="-1"></iframe></div>`;
+    }).join('');
+    compareBackdrop.classList.add('open');
+  });
+  document.getElementById('compare-close').addEventListener('click', () => {
+    compareBackdrop.classList.remove('open');
+    compareGrid.innerHTML = '';
+  });
+  compareBackdrop.addEventListener('click', (e) => { if(e.target === compareBackdrop){ compareBackdrop.classList.remove('open'); compareGrid.innerHTML = ''; } });
 
   // ---------------- modal ----------------
   const backdrop = document.getElementById('modal-backdrop');
@@ -166,6 +242,7 @@
   const modalCode = document.getElementById('modal-code');
   const modalFav = document.getElementById('modal-fav');
   const openNew = document.getElementById('open-new');
+  const modalOpenFull = document.getElementById('modal-open-full');
   const tabBtns = [...document.querySelectorAll('.tab-btn')];
   const panels = {
     preview: document.querySelector('[data-panel="preview"]'),
@@ -208,6 +285,7 @@
     modalIframe.src = f.file;
     modalCode.textContent = f.code;
     openNew.href = f.file;
+    modalOpenFull.href = f.file;
     modalFav.classList.toggle('active', isFavorite(id));
     colorRow.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
     backdrop.classList.add('open');
@@ -234,7 +312,11 @@
 
   document.getElementById('modal-close').addEventListener('click', closeModal);
   backdrop.addEventListener('click', (e) => { if(e.target === backdrop) closeModal(); });
-  document.addEventListener('keydown', (e) => { if(e.key === 'Escape' && backdrop.classList.contains('open')) closeModal(); });
+  document.addEventListener('keydown', (e) => {
+    if(e.key !== 'Escape') return;
+    if(backdrop.classList.contains('open')) closeModal();
+    if(compareBackdrop.classList.contains('open')){ compareBackdrop.classList.remove('open'); compareGrid.innerHTML = ''; }
+  });
   tabBtns.forEach(b => b.addEventListener('click', () => switchTab(b.dataset.tab)));
 
   document.getElementById('copy-code').addEventListener('click', async () => {
@@ -265,6 +347,62 @@
     a.click();
     a.remove();
     URL.revokeObjectURL(url);
+  });
+
+  document.getElementById('export-theme').addEventListener('click', () => {
+    if(!currentId) return;
+    const f = FORMS.find(x => x.id === currentId);
+    if(!f) return;
+    const match = f.code.match(/:root\{[^}]*\}/);
+    const themeCss = match
+      ? `/* ${f.palette} — exported from LoginKit */\n${match[0].replace(/;/g, ';\n  ').replace('{', '{\n  ').replace(/\s*\}$/, '\n}')}`
+      : `/* ${f.palette} */\n:root{ --accent: #3346ff; }`;
+    const blob = new Blob([themeCss], { type: 'text/css' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${f.palette_key}-theme.css`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  });
+
+  // ---------------- surprise me ----------------
+  document.getElementById('surprise-btn').addEventListener('click', () => {
+    if(!FORMS.length) return;
+    const pick = FORMS[Math.floor(Math.random() * FORMS.length)];
+    openModal(pick.id, 'preview');
+  });
+
+  // ---------------- keyboard navigation ----------------
+  let kbdIndex = -1;
+  function cardEls(){ return [...grid.querySelectorAll('.card')]; }
+  function setKbdFocus(idx){
+    const cards = cardEls();
+    if(!cards.length) return;
+    cards.forEach(c => c.classList.remove('kbd-focus'));
+    kbdIndex = Math.max(0, Math.min(idx, cards.length - 1));
+    const el = cards[kbdIndex];
+    el.classList.add('kbd-focus');
+    el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }
+  document.addEventListener('keydown', (e) => {
+    const tag = (e.target.tagName || '').toLowerCase();
+    const typing = tag === 'input' || tag === 'textarea';
+    if(e.key === '/' && !typing){
+      e.preventDefault();
+      searchInput.focus();
+      return;
+    }
+    if(typing) return;
+    if(backdrop.classList.contains('open') || compareBackdrop.classList.contains('open')) return;
+    if(e.key === 'j' || e.key === 'ArrowDown'){ e.preventDefault(); setKbdFocus(kbdIndex + 1); }
+    else if(e.key === 'k' || e.key === 'ArrowUp'){ e.preventDefault(); setKbdFocus(kbdIndex - 1); }
+    else if(e.key === 'Enter' && kbdIndex >= 0){
+      const cards = cardEls();
+      if(cards[kbdIndex]) openModal(cards[kbdIndex].dataset.id, 'preview');
+    }
   });
 
   // ---------------- hero rotating preview ----------------
