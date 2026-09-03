@@ -130,5 +130,38 @@
     "palette_key": "cork-wine",
     "blurb": "A wine cellar: the button carries a continuous slow flicker, like it's lit from within, echoing the candlelight glow behind the card.",
     "n": 12
+  },
+  {
+    "id": "meridian-verify",
+    "file": "forms/meridian-verify.html",
+    "title": "Meridian Exchange",
+    "layout": "Six-Digit OTP",
+    "layout_key": "otp-verify",
+    "palette": "Sapphire & Gold",
+    "palette_key": "sapphire-gold",
+    "blurb": "A private exchange's verification step: auto-advancing digit boxes, full paste support, and a resend timer that actually counts down.",
+    "n": 13
+  },
+  {
+    "id": "the-keep-session-lock",
+    "file": "forms/the-keep-session-lock.html",
+    "title": "The Keep",
+    "layout": "Session Lock",
+    "layout_key": "session-lock",
+    "palette": "Forest & Ivory",
+    "palette_key": "forest-ivory",
+    "blurb": "The screen a returning user sees far more than a real login: your name and avatar are known, only the password is missing.",
+    "n": 14
+  },
+  {
+    "id": "fielding-magic-link",
+    "file": "forms/fielding-magic-link.html",
+    "title": "Fielding & Co.",
+    "layout": "Passwordless Magic Link",
+    "layout_key": "magic-link",
+    "palette": "Linen & Terracotta",
+    "palette_key": "linen-terracotta",
+    "blurb": "No password to type or leak: one email field, one link sent, and a real confirmation state with a resend option.",
+    "n": 15
   }
 ]
