@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Aurelia — Member Entrance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#100d09;
+    --ink-2:#171209;
+    --gold-deep:#8a6a35;
+    --gold:#c9a24a;
+    --gold-bright:#e7c988;
+    --cream:#f3ead9;
+    --taupe:#9c8f78;
+    --hairline:rgba(231,201,136,0.16);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{
+    background:var(--ink);
+    color:var(--cream);
+    font-family:'Inter', sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    display:flex; align-items:center; justify-content:center;
+    padding:60px 28px;
+    position:relative;
+    overflow:hidden;
+  }
+
+  /* ---------- ambient background ---------- */
+  .glow{
+    position:fixed; border-radius:50%; filter:blur(120px); pointer-events:none; z-index:0;
+    background:radial-gradient(circle, var(--gold-deep), transparent 70%);
+    opacity:.22;
+  }
+  .glow-a{width:640px; height:640px; top:-220px; left:-160px; animation:drift-a 34s ease-in-out infinite;}
+  .glow-b{width:520px; height:520px; bottom:-200px; right:-140px; animation:drift-b 40s ease-in-out infinite;}
+  @keyframes drift-a{0%,100%{transform:translate(0,0);} 50%{transform:translate(60px,40px);}}
+  @keyframes drift-b{0%,100%{transform:translate(0,0);} 50%{transform:translate(-50px,-30px);}}
+
+  .grain{
+    position:fixed; inset:0; pointer-events:none; z-index:0; opacity:.05; mix-blend-mode:overlay;
+    background-image:radial-gradient(rgba(255,255,255,.9) 0.6px, transparent 0.6px);
+    background-size:3px 3px;
+  }
+
+  /* ---------- composition ---------- */
+  .stage{
+    position:relative; z-index:1; width:100%; max-width:400px;
+    opacity:0; transform:translateY(14px) scale(.98);
+    animation:reveal 1s cubic-bezier(.16,1,.3,1) forwards;
+  }
+  @keyframes reveal{ to{ opacity:1; transform:translateY(0) scale(1); } }
+
+  .mark{
+    display:flex; align-items:center; gap:14px; margin-bottom:38px;
+    opacity:0; animation:fadeIn .8s ease forwards; animation-delay:.15s;
+  }
+  .mark svg{ width:30px; height:30px; flex:none; }
+  .mark svg path{
+    stroke:var(--gold); stroke-width:1; fill:none;
+    stroke-dasharray:120; stroke-dashoffset:120;
+    animation:draw 1.4s cubic-bezier(.65,0,.35,1) forwards; animation-delay:.25s;
+  }
+  .mark .word{ font-family:'Cormorant Garamond', serif; font-size:19px; letter-spacing:.06em; color:var(--gold-bright); }
+
+  h1{
+    font-family:'Cormorant Garamond', serif; font-weight:500; font-size:38px; line-height:1.15;
+    margin-bottom:10px; max-width:320px;
+    opacity:0; animation:fadeUp .8s cubic-bezier(.16,1,.3,1) forwards; animation-delay:.3s;
+  }
+  .sub{
+    font-size:14px; color:var(--taupe); margin-bottom:8px; max-width:300px; line-height:1.5;
+    opacity:0; animation:fadeUp .8s cubic-bezier(.16,1,.3,1) forwards; animation-delay:.38s;
+  }
+  .rule{
+    height:1px; width:0; background:linear-gradient(90deg, var(--gold), transparent);
+    margin:26px 0 30px; animation:growRule 1s cubic-bezier(.65,0,.35,1) forwards; animation-delay:.5s;
+  }
+  @keyframes fadeIn{ to{ opacity:1; } }
+  @keyframes fadeUp{ to{ opacity:1; transform:none; } }
+  @keyframes growRule{ to{ width:100%; } }
+  h1, .sub{ transform:translateY(8px); }
+
+  /* ---------- tabs ---------- */
+  .tabs{
+    position:relative; display:flex; gap:28px; margin-bottom:34px; border-bottom:1px solid var(--hairline);
+    opacity:0; animation:fadeUp .7s cubic-bezier(.16,1,.3,1) forwards; animation-delay:.58s;
+  }
+  .tabs button{
+    background:none; border:none; color:var(--taupe); font-family:'Inter', sans-serif; font-size:13px;
+    font-weight:500; letter-spacing:.02em; padding:0 0 14px; cursor:pointer; transition:color .3s ease;
+  }
+  .tabs button.active{ color:var(--gold-bright); }
+  .tab-indicator{
+    position:absolute; bottom:-1px; height:1.5px; background:var(--gold-bright); box-shadow:0 0 8px var(--gold);
+    transition:transform .5s cubic-bezier(.65,0,.35,1), width .5s cubic-bezier(.65,0,.35,1);
+  }
+
+  /* ---------- form ---------- */
+  form{
+    opacity:0; animation:fadeUp .7s cubic-bezier(.16,1,.3,1) forwards; animation-delay:.68s;
+  }
+  .field{ position:relative; margin-bottom:28px; }
+  .field label{
+    position:absolute; left:0; top:11px; font-size:14px; color:var(--taupe); pointer-events:none;
+    transition:transform .3s cubic-bezier(.4,0,.2,1), font-size .3s cubic-bezier(.4,0,.2,1), color .3s ease;
+    transform-origin:left top;
+  }
+  .field input{
+    width:100%; background:none; border:none; border-bottom:1px solid var(--hairline); color:var(--cream);
+    font-family:'Inter', sans-serif; font-size:15px; padding:11px 0 10px; outline:none;
+    transition:border-color .3s ease;
+  }
+  .field .underline-accent{
+    position:absolute; left:0; right:0; bottom:-1px; height:1.5px; background:var(--gold-bright);
+    transform:scaleX(0); transition:transform .4s cubic-bezier(.65,0,.35,1); box-shadow:0 0 8px var(--gold);
+  }
+  .field input:focus ~ .underline-accent{ transform:scaleX(1); }
+  .field input:focus{ border-color:transparent; }
+  .field input:focus + label,
+  .field input:not(:placeholder-shown) + label{
+    transform:translateY(-20px); font-size:11px; color:var(--gold-bright);
+  }
+  .field input::placeholder{ color:transparent; }
+
+  .extra{ max-height:0; opacity:0; overflow:hidden; transition:max-height .5s cubic-bezier(.4,0,.2,1), opacity .35s ease; }
+
+  .row-between{
+    display:flex; justify-content:space-between; align-items:center; font-size:12.5px; color:var(--taupe);
+    margin:2px 0 30px;
+  }
+  .row-between a{ color:var(--taupe); text-decoration:none; border-bottom:1px solid var(--hairline); padding-bottom:1px; transition:color .2s ease, border-color .2s ease; }
+  .row-between a:hover{ color:var(--gold-bright); border-color:var(--gold); }
+  .checkbox{ display:flex; align-items:center; gap:8px; }
+  .checkbox input{ accent-color:var(--gold); width:13px; height:13px; }
+
+  button.enter{
+    position:relative; width:100%; background:transparent; border:1px solid var(--gold-deep); color:var(--gold-bright);
+    font-family:'Cormorant Garamond', serif; font-style:italic; font-size:18px; letter-spacing:.02em;
+    padding:15px; cursor:pointer; overflow:hidden; isolation:isolate;
+    transition:color .5s ease, border-color .4s ease;
+  }
+  button.enter::before{
+    content:""; position:absolute; inset:0; background:linear-gradient(100deg, var(--gold-deep), var(--gold-bright));
+    transform:translateX(-100%); transition:transform .5s cubic-bezier(.65,0,.35,1); z-index:-1;
+  }
+  button.enter:hover{ color:var(--ink); border-color:var(--gold-bright); }
+  button.enter:hover::before{ transform:translateX(0); }
+  button.enter:active{ transform:scale(.99); }
+  button.enter .btn-label{ display:inline-flex; align-items:center; justify-content:center; gap:10px; transition:opacity .25s ease; }
+  button.enter.loading .btn-label{ opacity:0; }
+  .btn-spinner{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .25s ease;
+  }
+  button.enter.loading .btn-spinner{ opacity:1; }
+  .btn-spinner svg{ width:18px; height:18px; animation:spin 1.1s linear infinite; }
+  .btn-spinner circle{ stroke:currentColor; stroke-width:2; fill:none; stroke-dasharray:44; stroke-dashoffset:32; stroke-linecap:round; }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+
+  .divider{
+    display:flex; align-items:center; gap:16px; margin:28px 0; color:var(--taupe); font-size:11.5px; letter-spacing:.04em;
+  }
+  .divider::before, .divider::after{ content:""; flex:1; height:1px; background:var(--hairline); }
+
+  button.ghost{
+    width:100%; background:none; border:1px solid var(--hairline); color:var(--cream); font-family:'Inter', sans-serif;
+    font-size:13.5px; padding:13px; cursor:pointer; transition:border-color .25s ease, background .25s ease;
+  }
+  button.ghost:hover{ border-color:var(--gold-deep); background:rgba(201,162,74,0.06); }
+
+  .foot{ text-align:center; font-size:12.5px; color:var(--taupe); margin-top:26px; }
+  .foot a{ color:var(--gold-bright); text-decoration:none; cursor:pointer; }
+  .foot a:hover{ text-decoration:underline; }
+
+  :focus-visible{ outline:1px solid var(--gold-bright); outline-offset:3px; }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:.01ms !important; transition-duration:.01ms !important; }
+  }
+
+  .field{ position:relative; }
+  .eye-btn{
+    position:absolute; right:2px; bottom:6px; background:none; border:none; padding:5px; cursor:pointer;
+    color:var(--taupe); display:flex; align-items:center; justify-content:center; transition:color .2s ease; z-index:2;
+  }
+  .eye-btn:hover{ color:var(--gold-bright); }
+  .eye-btn svg{ width:15px; height:15px; }
+  input.has-eye{ padding-right:32px !important; }
+</style>
+</head>
+<body>
+
+<div class="glow glow-a"></div>
+<div class="glow glow-b"></div>
+<div class="grain"></div>
+
+<div class="stage">
+  <div class="mark">
+    <svg viewBox="0 0 32 32"><path d="M16 3 L16 29 M6 10 C6 18 10 26 16 29 C22 26 26 18 26 10 C20 13 12 13 6 10Z"/></svg>
+    <span class="word">AURELIA</span>
+  </div>
+
+  <h1 id="heading">Welcome back.</h1>
+  <p class="sub" id="subhead">Your concierge is expecting you.</p>
+  <div class="rule"></div>
+
+  <div class="tabs" id="tabs">
+    <button class="active" data-tab="signin" type="button">Sign in</button>
+    <button data-tab="signup" type="button">Request access</button>
+    <span class="tab-indicator" id="tabIndicator"></span>
+  </div>
+
+  <form onsubmit="return false;">
+    <div class="field extra" id="nameField">
+      <input type="text" placeholder=" " id="nameInput"  autocomplete="name" />
+      <label for="nameInput">Full name</label>
+      <span class="underline-accent"></span>
+    </div>
+
+    <div class="field">
+      <input type="email" placeholder=" " id="emailInput" required  autocomplete="email" />
+      <label for="emailInput">Email address</label>
+      <span class="underline-accent"></span>
+    </div>
+
+    <div class="field">
+      <input type="password" placeholder=" " id="pwInput" required  autocomplete="current-password"  class="has-eye" />
+      <label for="pwInput">Password</label>
+      <span class="underline-accent"></span><button type="button" class="eye-btn" data-for="pwInput" aria-label="Show password" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg></button>
+    </div>
+
+    <div class="field extra" id="confirmField">
+      <input type="password" placeholder=" " id="confirmInput"  autocomplete="new-password" />
+      <label for="confirmInput">Confirm password</label>
+      <span class="underline-accent"></span>
+    </div>
+
+    <div class="row-between" id="signinOnlyRow">
+      <label class="checkbox"><input type="checkbox" /> Remember me</label>
+      <a href="#">Forgot password?</a>
+    </div>
+
+    <button class="enter" type="submit" id="submitBtn">
+      <span class="btn-label" id="submitLabel">Enter</span>
+      <span class="btn-spinner"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg></span>
+    </button>
+  </form>
+
+  <div class="divider">or continue with</div>
+  <button class="ghost" type="button">Google</button>
+
+  <p class="foot" id="footNote">New to Aurelia? <a data-switch="signup" id="switchLink">Request access</a></p>
+</div>
+
+<script>
+(function(){
+  document.querySelectorAll('.eye-btn').forEach(function(btn){
+    var input = document.getElementById(btn.dataset.for);
+    if(!input) return;
+    var showing = false;
+    btn.addEventListener('click', function(){
+      showing = !showing;
+      input.type = showing ? 'text' : 'password';
+      btn.setAttribute('aria-pressed', showing ? 'true' : 'false');
+      btn.setAttribute('aria-label', showing ? 'Hide password' : 'Show password');
+      btn.innerHTML = showing ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17.94 17.94A10.94 10.94 0 0112 19c-7 0-11-7-11-7a20.6 20.6 0 015.06-5.94M9.9 4.24A10.4 10.4 0 0112 4c7 0 11 7 11 7a20.6 20.6 0 01-2.16 3.19M14.12 14.12a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>' : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>';
+    });
+  });
+
+  var tabs = document.querySelectorAll('#tabs button[data-tab]');
+  var indicator = document.getElementById('tabIndicator');
+  var nameField = document.getElementById('nameField');
+  var confirmField = document.getElementById('confirmField');
+  var signinOnlyRow = document.getElementById('signinOnlyRow');
+  var heading = document.getElementById('heading');
+  var subhead = document.getElementById('subhead');
+  var submitLabel = document.getElementById('submitLabel');
+  var footNote = document.getElementById('footNote');
+  var submitBtn = document.getElementById('submitBtn');
+
+  var COPY = {
+    signin: { heading: 'Welcome back.', sub: 'Your concierge is expecting you.', submit: 'Enter', foot: 'New to Aurelia? <a data-switch="signup">Request access</a>' },
+    signup: { heading: 'Join Aurelia.', sub: 'Membership is by request. We reply within a day.', submit: 'Request access', foot: 'Already a member? <a data-switch="signin">Sign in</a>' }
+  };
+
+  function positionIndicator(el){
+    indicator.style.width = el.offsetWidth + 'px';
+    indicator.style.transform = 'translateX(' + el.offsetLeft + 'px)';
+  }
+
+  function bindSwitchLinks(){
+    document.querySelectorAll('[data-switch]').forEach(function(a){
+      a.addEventListener('click', function(e){ e.preventDefault(); setMode(a.getAttribute('data-switch')); });
+    });
+  }
+
+  function setMode(mode){
+    tabs.forEach(function(t){ t.classList.toggle('active', t.dataset.tab === mode); if(t.dataset.tab === mode) positionIndicator(t); });
+    var showExtra = mode === 'signup';
+    [nameField, confirmField].forEach(function(f){
+      f.style.maxHeight = showExtra ? f.scrollHeight + 'px' : '0px';
+      f.style.opacity = showExtra ? 1 : 0;
+    });
+    signinOnlyRow.style.display = mode === 'signin' ? 'flex' : 'none';
+    heading.textContent = COPY[mode].heading;
+    subhead.textContent = COPY[mode].sub;
+    submitLabel.textContent = COPY[mode].submit;
+    footNote.innerHTML = COPY[mode].foot;
+    bindSwitchLinks();
+  }
+
+  tabs.forEach(function(t){ t.addEventListener('click', function(){ setMode(t.dataset.tab); }); });
+  bindSwitchLinks();
+  window.addEventListener('load', function(){ positionIndicator(document.querySelector('#tabs button.active')); });
+
+  // decorative submit micro-interaction (demo only — no real request is sent)
+  submitBtn.addEventListener('click', function(){
+    if(submitBtn.classList.contains('loading')) return;
+    submitBtn.classList.add('loading');
+    setTimeout(function(){ submitBtn.classList.remove('loading'); }, 1600);
+  });
+
+  window.addEventListener('message', function(e){
+    if(e.data && e.data.type === 'loginkit-accent'){
+      document.documentElement.style.setProperty('--gold-bright', e.data.color);
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
