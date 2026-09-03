@@ -87,6 +87,8 @@
     <div><h3>Can I change the colors?</h3><p>Every template is built on CSS custom properties declared in a <code>:root</code> block at the top of the file — the exact names vary by template (some use <code>--gold</code>, others <code>--wine</code> or <code>--copper</code>) but they're easy to spot and re-theme.</p></div>
     <div><h3>Is this actually free?</h3><p>Yes — MIT licensed. Use it in personal or commercial projects, no attribution required.</p></div>
     <div><h3>Are these accessible?</h3><p>Every field has a real <code>&lt;label&gt;</code>, password fields carry a show/hide toggle with an updating <code>aria-label</code>, inputs use the correct <code>autocomplete</code> values so password managers behave, and focus states are visible throughout — but you should still test against your own auth flow and content.</p></div>
+    <div><h3>How do I know it's actually accessible?</h3><p>Open any template and check the badge under the title — it runs six real checks against that template's own markup (labels, autocomplete, aria-label on icon buttons, focus-visible, reduced-motion support, password-toggle aria-pressed) and shows you a live pass/fail count, not just a claim in the copy.</p></div>
+    <div><h3>Can this wire itself to a backend?</h3><p>Not automatically — but open the "Connect" tab in any template's modal and pick Firebase, Supabase, or plain fetch. It generates real auth code using that template's actual field IDs, ready to paste in and point at your own project.</p></div>
   </div>
 </section>
 
@@ -103,6 +105,7 @@
       <div>
         <h3 id="modal-title"></h3>
         <p id="modal-blurb"></p>
+        <button class="a11y-badge" id="a11y-badge" type="button" title="Accessibility audit — click for details" hidden></button>
       </div>
       <div class="modal-header-actions">
         <a class="icon-btn" id="modal-open-full" href="#" target="_blank" rel="noopener" aria-label="Open full size" title="Open full size in a new tab">
@@ -114,9 +117,11 @@
         <button class="modal-close" id="modal-close" aria-label="Close">✕</button>
       </div>
     </div>
+    <div class="a11y-panel" id="a11y-panel" hidden></div>
     <div class="modal-tabs">
       <button class="tab-btn active" data-tab="preview">Preview</button>
       <button class="tab-btn" data-tab="code">Code</button>
+      <button class="tab-btn" data-tab="connect">Connect</button>
     </div>
     <div class="color-row" id="color-row">
       <span class="cr-label">Accent</span>
@@ -136,6 +141,19 @@
           <a id="open-new" target="_blank" rel="noopener">Open in new tab ↗</a>
         </div>
         <pre id="modal-code"></pre>
+      </div>
+      <div class="tab-panel" data-panel="connect" hidden>
+        <div class="connect-toolbar">
+          <span class="cr-label">Backend</span>
+          <select id="connect-provider">
+            <option value="fetch">Plain fetch / REST API</option>
+            <option value="firebase">Firebase Auth</option>
+            <option value="supabase">Supabase Auth</option>
+          </select>
+          <button id="copy-connect">Copy snippet</button>
+        </div>
+        <p class="color-hint">Generated from this template's actual field IDs — drop it in, point the endpoint/config at your own backend.</p>
+        <pre id="connect-code"></pre>
       </div>
     </div>
   </div>
