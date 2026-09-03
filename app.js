@@ -76,6 +76,7 @@
           <button class="fav-btn${fav ? ' active' : ''}" data-action="fav" data-id="${f.id}" aria-label="Favorite" title="Favorite">
             <svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 00-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 000-7.8z"/></svg>
           </button>
+          <span class="card-a11y" data-a11y-badge="${f.id}"><span class="dot"></span><span class="score"></span></span>
           <iframe data-src="${f.file}" loading="lazy" tabindex="-1"></iframe>
         </div>
         <div class="card-body">
@@ -92,6 +93,57 @@
     `;
   }
 
+  // ---------------- accessibility audit ----------------
+  const a11yCache = new Map();
+  function auditAccessibility(doc){
+    const checks = [];
+    const inputs = [...doc.querySelectorAll('input:not([type="hidden"]):not([type="checkbox"])')];
+    const labelsOk = inputs.length > 0 && inputs.every(inp => inp.id && doc.querySelector(`label[for="${inp.id}"]`));
+    checks.push({ label: 'Every field has a matching <label for>', pass: labelsOk });
+
+    const relevantInputs = [...doc.querySelectorAll('input[type="email"], input[type="password"], input[type="text"]')];
+    const autocompleteOk = relevantInputs.length > 0 && relevantInputs.every(inp => inp.hasAttribute('autocomplete'));
+    checks.push({ label: 'autocomplete attributes present', pass: autocompleteOk });
+
+    const iconButtons = [...doc.querySelectorAll('button')].filter(b => !b.textContent.trim() && b.querySelector('svg'));
+    const iconAriaOk = iconButtons.length === 0 || iconButtons.every(b => b.hasAttribute('aria-label') && b.getAttribute('aria-label').trim().length > 0);
+    checks.push({ label: 'Icon-only buttons carry aria-label', pass: iconAriaOk });
+
+    const styleText = [...doc.querySelectorAll('style')].map(s => s.textContent).join('\n');
+    checks.push({ label: 'Visible :focus-visible state defined', pass: /:focus-visible/.test(styleText) });
+    checks.push({ label: 'Respects prefers-reduced-motion', pass: /prefers-reduced-motion/.test(styleText) });
+
+    const eyeBtns = [...doc.querySelectorAll('.eye-btn')];
+    const eyeAriaOk = eyeBtns.length === 0 || eyeBtns.every(b => b.hasAttribute('aria-pressed'));
+    checks.push({ label: 'Password toggle exposes aria-pressed', pass: eyeAriaOk });
+
+    const passing = checks.filter(c => c.pass).length;
+    return { score: passing, total: checks.length, checks };
+  }
+
+  function runAudit(f, iframe){
+    if(a11yCache.has(f.id)) return a11yCache.get(f.id);
+    try{
+      const doc = iframe.contentDocument;
+      if(!doc) return null;
+      const result = auditAccessibility(doc);
+      a11yCache.set(f.id, result);
+      applyCardBadge(f.id, result);
+      return result;
+    }catch(e){
+      return null;
+    }
+  }
+
+  function applyCardBadge(id, result){
+    const badge = grid.querySelector(`[data-a11y-badge="${id}"]`);
+    if(!badge) return;
+    badge.classList.add('show');
+    badge.classList.toggle('pass', result.score === result.total);
+    badge.classList.toggle('warn', result.score < result.total);
+    badge.querySelector('.score').textContent = `A11y ${result.score}/${result.total}`;
+  }
+
   let io;
   function setupLazyIframes(){
     if(io) io.disconnect();
@@ -101,7 +153,12 @@
           const iframe = entry.target;
           if(iframe.dataset.src && !iframe.src){
             iframe.src = iframe.dataset.src;
-            iframe.addEventListener('load', () => iframe.classList.add('loaded'), { once: true });
+            iframe.addEventListener('load', () => {
+              iframe.classList.add('loaded');
+              const card = iframe.closest('.card');
+              const f = card ? FORMS.find(x => x.id === card.dataset.id) : null;
+              if(f) runAudit(f, iframe);
+            }, { once: true });
           }
           io.unobserve(iframe);
         }
@@ -228,9 +285,14 @@
   const panels = {
     preview: document.querySelector('[data-panel="preview"]'),
     code: document.querySelector('[data-panel="code"]'),
+    connect: document.querySelector('[data-panel="connect"]'),
   };
   const colorRow = document.getElementById('color-row');
   const customColor = document.getElementById('custom-color');
+  const a11yBadge = document.getElementById('a11y-badge');
+  const a11yPanel = document.getElementById('a11y-panel');
+  const connectProvider = document.getElementById('connect-provider');
+  const connectCode = document.getElementById('connect-code');
 
   const SWATCHES = ['#3346ff', '#e8a33d', '#7ce7c4', '#c1512f', '#ef4899', '#22c55e', '#0ea5e9', '#111111'];
   let currentId = null;
@@ -269,6 +331,22 @@
     modalOpenFull.href = f.file;
     modalFav.classList.toggle('active', isFavorite(id));
     colorRow.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+    a11yBadge.hidden = true;
+    a11yPanel.classList.remove('open');
+    a11yPanel.hidden = true;
+    modalIframe.addEventListener('load', function onLoad(){
+      modalIframe.removeEventListener('load', onLoad);
+      const result = runAudit(f, modalIframe) || a11yCache.get(f.id);
+      if(!result) return;
+      a11yBadge.hidden = false;
+      a11yBadge.classList.toggle('pass', result.score === result.total);
+      a11yBadge.classList.toggle('warn', result.score < result.total);
+      a11yBadge.innerHTML = `<span class="dot"></span> Accessibility ${result.score}/${result.total}`;
+      a11yPanel.innerHTML = '<ul>' + result.checks.map(c =>
+        `<li class="${c.pass ? 'pass' : 'fail'}"><span class="mark">${c.pass ? '✓' : '✕'}</span>${c.label}</li>`
+      ).join('') + '</ul>';
+    });
+    renderConnectSnippet(f);
     backdrop.classList.add('open');
     switchTab(tab || 'preview');
   }
@@ -281,7 +359,12 @@
     tabBtns.forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
     panels.preview.hidden = tab !== 'preview';
     panels.code.hidden = tab !== 'code';
+    panels.connect.hidden = tab !== 'connect';
   }
+  a11yBadge.addEventListener('click', () => {
+    a11yPanel.hidden = false;
+    a11yPanel.classList.toggle('open');
+  });
 
   modalFav.addEventListener('click', () => {
     if(!currentId) return;
@@ -347,6 +430,120 @@
     a.click();
     a.remove();
     URL.revokeObjectURL(url);
+  });
+
+  // ---------------- connect / backend snippet generator ----------------
+  function detectFields(code){
+    const emailIds = [...code.matchAll(/type="email"[^>]*id="([^"]+)"/g)].map(m => m[1]);
+    const pwIds = [...code.matchAll(/type="password"[^>]*id="((?!confirm)[a-zA-Z]+)"/g)].map(m => m[1]);
+    return {
+      email: emailIds[0] || 'emailInput',
+      password: pwIds[0] || 'pwInput',
+      hasTwoForms: emailIds.length > 1,
+    };
+  }
+
+  function connectSnippet(provider, f){
+    const { email, password, hasTwoForms } = detectFields(f.code);
+    const modeLine = `const mode = document.querySelector("#tabs button.active")?.dataset.tab || "signin";`;
+    const formNote = hasTwoForms
+      ? `// Note: this template uses two separate forms (sign-in / sign-up) with their own field IDs.\n// Repeat the relevant block below for the second form's ids.\n`
+      : '';
+
+    if(provider === 'firebase'){
+      return `${formNote}import { initializeApp } from "firebase/app";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
+
+const app = initializeApp({ /* your Firebase config */ });
+const auth = getAuth(app);
+
+document.querySelector("form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const email = document.getElementById("${email}").value;
+  const password = document.getElementById("${password}").value;
+  ${modeLine}
+
+  try {
+    if (mode === "signup") {
+      await createUserWithEmailAndPassword(auth, email, password);
+    } else {
+      await signInWithEmailAndPassword(auth, email, password);
+    }
+    window.location.href = "/dashboard";
+  } catch (err) {
+    console.error(err.code, err.message);
+  }
+});`;
+    }
+
+    if(provider === 'supabase'){
+      return `${formNote}import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient("YOUR_SUPABASE_URL", "YOUR_SUPABASE_ANON_KEY");
+
+document.querySelector("form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const email = document.getElementById("${email}").value;
+  const password = document.getElementById("${password}").value;
+  ${modeLine}
+
+  const { data, error } = mode === "signup"
+    ? await supabase.auth.signUp({ email, password })
+    : await supabase.auth.signInWithPassword({ email, password });
+
+  if (error) {
+    console.error(error.message);
+    return;
+  }
+  window.location.href = "/dashboard";
+});`;
+    }
+
+    return `${formNote}document.querySelector("form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const email = document.getElementById("${email}").value;
+  const password = document.getElementById("${password}").value;
+  ${modeLine}
+
+  const res = await fetch(mode === "signup" ? "/api/signup" : "/api/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    console.error(err.message || res.statusText);
+    return;
+  }
+
+  const { token } = await res.json();
+  localStorage.setItem("token", token);
+  window.location.href = "/dashboard";
+});`;
+  }
+
+  function renderConnectSnippet(f){
+    connectCode.textContent = connectSnippet(connectProvider.value, f);
+  }
+  connectProvider.addEventListener('change', () => {
+    if(!currentId) return;
+    const f = FORMS.find(x => x.id === currentId);
+    if(f) renderConnectSnippet(f);
+  });
+  document.getElementById('copy-connect').addEventListener('click', async () => {
+    const btn = document.getElementById('copy-connect');
+    try{
+      await navigator.clipboard.writeText(connectCode.textContent);
+      const original = btn.textContent;
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = original, 1400);
+    }catch(err){
+      const range = document.createRange();
+      range.selectNode(connectCode);
+      window.getSelection().removeAllRanges();
+      window.getSelection().addRange(range);
+    }
   });
 
   // ---------------- surprise me ----------------
