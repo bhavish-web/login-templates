@@ -163,5 +163,115 @@
     "palette_key": "linen-terracotta",
     "blurb": "No password to type or leak: one email field, one link sent, and a real confirmation state with a resend option.",
     "n": 15
+  },
+  {
+    "id": "atelier-noir",
+    "file": "forms/atelier-noir.html",
+    "title": "Atelier Noir",
+    "layout": "Split Screen + Drape Reveal",
+    "layout_key": "split-drape",
+    "palette": "Monochrome Chalk",
+    "palette_key": "mono-chalk",
+    "blurb": "A fashion house: a silk drape unfurls via clip-path on load; the button's letter-spacing widens instead of filling with color.",
+    "n": 16
+  },
+  {
+    "id": "the-cartographer",
+    "file": "forms/the-cartographer.html",
+    "title": "The Cartographer's Society",
+    "layout": "Pill Tab + Compass Entrance",
+    "layout_key": "pill-compass",
+    "palette": "Parchment & Teal",
+    "palette_key": "parchment-teal",
+    "blurb": "A travel society: a compass needle swings and settles to north before the form appears.",
+    "n": 17
+  },
+  {
+    "id": "lumen-optics",
+    "file": "forms/lumen-optics.html",
+    "title": "Lumen Optics",
+    "layout": "Underline Tab + Iris Reveal",
+    "layout_key": "underline-iris",
+    "palette": "Graphite & Steel",
+    "palette_key": "graphite-steel",
+    "blurb": "An eyewear brand: six camera-aperture blades snap open to reveal the page, echoed again in the button's radial hover fill.",
+    "n": 18
+  },
+  {
+    "id": "sable-and-fox",
+    "file": "forms/sable-and-fox.html",
+    "title": "Sable & Fox",
+    "layout": "Split Screen, Sign-In Only",
+    "layout_key": "split-signin-only",
+    "palette": "Charcoal & Copper",
+    "palette_key": "charcoal-copper",
+    "blurb": "A leather goods maker: a dashed stitch line draws itself around a frame on load, and again around the button on hover.",
+    "n": 19
+  },
+  {
+    "id": "northbound-post",
+    "file": "forms/northbound-post.html",
+    "title": "Northbound Post",
+    "layout": "Wax Seal + Hard Shadow",
+    "layout_key": "seal-hardshadow",
+    "palette": "Cream & Crimson",
+    "palette_key": "cream-crimson",
+    "blurb": "A courier service: a wax seal stamps down onto the card before it settles, and the button presses with a hard offset shadow.",
+    "n": 20
+  },
+  {
+    "id": "the-orangery",
+    "file": "forms/the-orangery.html",
+    "title": "The Orangery",
+    "layout": "Split Screen + Vine Growth",
+    "layout_key": "split-vine",
+    "palette": "Sage & Brass",
+    "palette_key": "sage-brass",
+    "blurb": "A botanical conservatory: a vine draws itself upward with leaves fading in along the way, behind a greenhouse windowpane grid.",
+    "n": 21
+  },
+  {
+    "id": "constantine-and-reeve",
+    "file": "forms/constantine-and-reeve.html",
+    "title": "Constantine & Reeve",
+    "layout": "Centered, Sign-In Only",
+    "layout_key": "centered-signin-only",
+    "palette": "Burgundy & Brass",
+    "palette_key": "burgundy-brass",
+    "blurb": "A barrister's chambers: flanking architectural column lines and a crest that settles into place \u2014 invite-only, no public sign-up.",
+    "n": 22
+  },
+  {
+    "id": "nightjar-records",
+    "file": "forms/nightjar-records.html",
+    "title": "Nightjar Records",
+    "layout": "Split Screen + Turntable",
+    "layout_key": "split-turntable",
+    "palette": "Indigo & Amber",
+    "palette_key": "indigo-amber",
+    "blurb": "A vinyl label: a tonearm lowers onto a record, which then spins continuously behind the form for as long as the page is open.",
+    "n": 23
+  },
+  {
+    "id": "the-apiary",
+    "file": "forms/the-apiary.html",
+    "title": "The Apiary",
+    "layout": "Underline Tab + Honeycomb",
+    "layout_key": "underline-honeycomb",
+    "palette": "Honey & Umber",
+    "palette_key": "honey-umber",
+    "blurb": "A beekeeping brand: a field of hexagons builds itself in behind the card, and the button blooms with a warm glow on hover.",
+    "n": 24
+  },
+  {
+    "id": "sterling-and-vine",
+    "file": "forms/sterling-and-vine.html",
+    "title": "Sterling & Vine",
+    "layout": "Centered, Sign-In Only",
+    "layout_key": "centered-ticker",
+    "palette": "Sterling & Pale Gold",
+    "palette_key": "sterling-palegold",
+    "blurb": "A private bank: quiet market-ticker text scrolls along the top and bottom edges \u2014 invitation-only, passkey offered as an alternative.",
+    "n": 25
   }
 ]
