@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sterling &amp; Vine — Private Client Sign In</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sterling:#0f1613; --card:#151f1a; --palegold:#c7b57a; --palegold-bright:#e2d59e; --line:rgba(199,181,122,0.14); --cream:#eceee9; --dim:#7f8a80;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{
+    background:var(--sterling); color:var(--cream); font-family:'Inter', sans-serif; -webkit-font-smoothing:antialiased;
+    min-height:100vh; display:flex; align-items:center; justify-content:center; padding:60px 24px; position:relative; overflow:hidden;
+  }
+  @media (prefers-reduced-motion: reduce){ *{ animation-duration:.01ms !important; transition-duration:.01ms !important; } }
+  :focus-visible{ outline:1px solid var(--palegold-bright); outline-offset:2px; }
+
+  .ticker{
+    position:fixed; top:40px; left:0; right:0; white-space:nowrap; font-family:'Inter', monospace; font-size:11px; letter-spacing:.05em;
+    color:var(--dim); opacity:.4; overflow:hidden;
+  }
+  .ticker span{ display:inline-block; padding-left:100%; animation:scroll 38s linear infinite; }
+  @keyframes scroll{ from{ transform:translateX(0); } to{ transform:translateX(-100%); } }
+  .ticker.bottom{ top:auto; bottom:40px; }
+  .ticker.bottom span{ animation-direction:reverse; }
+
+  .stage{ position:relative; z-index:1; width:100%; max-width:380px; text-align:center;
+    opacity:0; animation:fadeIn .3s ease forwards; }
+  @keyframes fadeIn{ to{ opacity:1; } }
+
+  .brand{ font-size:11px; letter-spacing:.24em; color:var(--palegold); margin-bottom:16px;
+    opacity:0; animation:fadeUp .6s cubic-bezier(.16,1,.3,1) forwards; animation-delay:.1s; }
+  h1{ font-family:'Playfair Display', serif; font-weight:600; font-size:26px; margin-bottom:8px;
+    opacity:0; animation:fadeUp .6s cubic-bezier(.16,1,.3,1) forwards; animation-delay:.18s; }
+  .sub{ font-size:13px; color:var(--dim); margin-bottom:32px;
+    opacity:0; animation:fadeUp .6s cubic-bezier(.16,1,.3,1) forwards; animation-delay:.24s; }
+  @keyframes fadeUp{ to{ opacity:1; transform:none; } }
+  h1, .sub{ transform:translateY(6px); }
+
+  .panel{ text-align:left; background:var(--card); border:1px solid var(--line); padding:38px 34px;
+    opacity:0; animation:fadeUp .7s cubic-bezier(.16,1,.3,1) forwards; animation-delay:.32s; }
+
+  .field{ position:relative; margin-bottom:24px; }
+  .field label{ display:block; font-size:11px; letter-spacing:.04em; color:var(--dim); margin-bottom:8px; }
+  .field input{ width:100%; background:none; border:none; border-bottom:1px solid var(--line); color:var(--cream); font-size:15px; padding:9px 32px 9px 0; outline:none; transition:border-color .3s ease; }
+  .field input:focus{ border-color:var(--palegold); }
+  .field input::placeholder{ color:var(--dim); opacity:.5; }
+  .eye-btn{ position:absolute; right:2px; bottom:6px; background:none; border:none; padding:5px; cursor:pointer; color:var(--dim); display:flex; }
+  .eye-btn:hover{ color:var(--palegold-bright); }
+  .eye-btn svg{ width:15px; height:15px; }
+
+  .row-between{ display:flex; justify-content:space-between; font-size:12px; color:var(--dim); margin:0 0 26px; }
+  .row-between a{ color:var(--dim); text-decoration:none; border-bottom:1px solid var(--line); }
+  .row-between a:hover{ color:var(--palegold-bright); }
+  .checkbox{ display:flex; align-items:center; gap:7px; }
+  .checkbox input{ accent-color:var(--palegold); width:13px; height:13px; }
+
+  button.enter{ width:100%; background:var(--palegold); border:none; color:#0f1613; font-size:13.5px; font-weight:600; padding:13px; cursor:pointer; transition:background .25s ease, transform .1s ease; }
+  button.enter:hover{ background:var(--palegold-bright); }
+  button.enter:active{ transform:scale(.99); }
+
+  .alt{ margin-top:18px; }
+  .alt button{ width:100%; background:none; border:1px solid var(--line); color:var(--cream); font-size:12.5px; padding:10px; cursor:pointer; transition:border-color .2s ease; }
+  .alt button:hover{ border-color:var(--palegold); }
+
+  .foot{ text-align:center; font-size:12px; color:var(--dim); margin-top:26px; line-height:1.6; }
+  .foot a{ color:var(--palegold-bright); text-decoration:none; }
+  .foot a:hover{ text-decoration:underline; }
+</style>
+</head>
+<body>
+
+<div class="ticker"><span>STG 412.85 ▲0.6% &nbsp;&nbsp;&nbsp; VNE 98.12 ▼0.2% &nbsp;&nbsp;&nbsp; INDX 5,102.4 ▲0.3% &nbsp;&nbsp;&nbsp; BND 101.9 ▲0.1% &nbsp;&nbsp;&nbsp; STG 412.85 ▲0.6%</span></div>
+<div class="ticker bottom"><span>FX EUR/USD 1.084 &nbsp;&nbsp;&nbsp; GOLD 2,341 ▲0.4% &nbsp;&nbsp;&nbsp; 10Y 4.21% &nbsp;&nbsp;&nbsp; VIX 13.2 ▼1.1% &nbsp;&nbsp;&nbsp; FX EUR/USD 1.084</span></div>
+
+<div class="stage">
+  <div class="brand">STERLING &amp; VINE</div>
+  <h1>Private client sign in</h1>
+  <p class="sub">Portfolio, statements, and your relationship manager.</p>
+
+  <div class="panel">
+    <form onsubmit="return false;">
+      <div class="field">
+        <label for="emailInput">Client email</label>
+        <input type="email" id="emailInput" placeholder="you@company.com" required autocomplete="email" />
+      </div>
+      <div class="field">
+        <label for="pwInput">Password</label>
+        <input type="password" id="pwInput" placeholder="••••••••••••" required autocomplete="current-password" class="has-eye" />
+        <button type="button" class="eye-btn" data-for="pwInput" aria-label="Show password" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg></button>
+      </div>
+      <div class="row-between">
+        <label class="checkbox"><input type="checkbox" /> Remember this device</label>
+        <a href="#">Forgot password?</a>
+      </div>
+      <button class="enter" type="submit">Sign in</button>
+    </form>
+    <div class="alt"><button type="button">Use a passkey instead</button></div>
+  </div>
+
+  <p class="foot">Private banking is by invitation.<br/><a href="#">Speak with a relationship manager</a></p>
+</div>
+
+<script>
+(function(){
+  document.querySelectorAll('.eye-btn').forEach(function(btn){
+    var input = document.getElementById(btn.dataset.for);
+    var showing = false;
+    btn.addEventListener('click', function(){
+      showing = !showing;
+      input.type = showing ? 'text' : 'password';
+      btn.setAttribute('aria-pressed', showing ? 'true' : 'false');
+      btn.setAttribute('aria-label', showing ? 'Hide password' : 'Show password');
+    });
+  });
+  window.addEventListener('message', function(e){ if(e.data && e.data.type==='loginkit-accent'){ document.documentElement.style.setProperty('--palegold', e.data.color); } });
+})();
+</script>
+
+</body>
+</html>

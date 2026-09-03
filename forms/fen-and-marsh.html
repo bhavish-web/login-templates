@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Fen &amp; Marsh Trust — Sign In</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bark:#1a1c14; --card:#22251a; --moss:#8ba362; --moss-bright:#a6c17d; --line:rgba(139,163,98,0.16); --cream:#eef0e4; --dim:#8a9376;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{
+    background:var(--bark); color:var(--cream); font-family:'Inter', sans-serif; -webkit-font-smoothing:antialiased;
+    min-height:100vh; display:flex; align-items:center; justify-content:center; padding:60px 24px; position:relative; overflow:hidden;
+  }
+  @media (prefers-reduced-motion: reduce){ *{ animation-duration:.01ms !important; transition-duration:.01ms !important; } }
+  :focus-visible{ outline:1px solid var(--moss-bright); outline-offset:2px; }
+
+  .topo{ position:fixed; inset:0; z-index:0; opacity:.4; }
+  .topo path{ fill:none; stroke:var(--moss); stroke-width:1; stroke-dasharray:1400; stroke-dashoffset:1400; animation:contour 2.6s ease forwards; }
+  .topo path:nth-child(2){ animation-delay:.15s; } .topo path:nth-child(3){ animation-delay:.3s; }
+  .topo path:nth-child(4){ animation-delay:.45s; }
+  @keyframes contour{ to{ stroke-dashoffset:0; } }
+
+  .stage{ position:relative; z-index:1; width:100%; max-width:380px; text-align:center;
+    opacity:0; animation:fadeIn .5s ease forwards; animation-delay:1s; }
+  @keyframes fadeIn{ to{ opacity:1; } }
+
+  .brand{ font-size:11px; letter-spacing:.22em; color:var(--moss); margin-bottom:16px; }
+  h1{ font-family:'Cormorant Garamond', serif; font-weight:500; font-style:italic; font-size:29px; margin-bottom:8px; }
+  .sub{ font-size:13.5px; color:var(--dim); margin-bottom:32px; }
+
+  .panel{ text-align:left; background:var(--card); border:1px solid var(--line); padding:36px 32px; border-radius:3px; }
+
+  .tabs{ display:flex; gap:26px; margin-bottom:30px; }
+  .tabs button{ background:none; border:none; color:var(--dim); font-size:12.5px; font-weight:600; padding:0; cursor:pointer; transition:color .3s ease; }
+  .tabs button.active{ color:var(--moss-bright); }
+
+  .field{ position:relative; margin-bottom:22px; }
+  .field label{ display:block; font-size:11px; letter-spacing:.04em; color:var(--dim); margin-bottom:8px; }
+  .field input{ width:100%; background:rgba(255,255,255,0.03); border:1px solid var(--line); color:var(--cream); font-size:15px; padding:10px 32px 10px 12px; border-radius:2px; outline:none; transition:border-color .2s ease; }
+  .field input:focus{ border-color:var(--moss); }
+  .field input::placeholder{ color:var(--dim); opacity:.5; }
+  .extra{ max-height:0; opacity:0; overflow:hidden; transition:max-height .5s cubic-bezier(.4,0,.2,1), opacity .35s ease; }
+  .eye-btn{ position:absolute; right:2px; bottom:6px; background:none; border:none; padding:5px; cursor:pointer; color:var(--dim); display:flex; }
+  .eye-btn:hover{ color:var(--moss-bright); }
+  .eye-btn svg{ width:15px; height:15px; }
+
+  .row-between{ display:flex; justify-content:space-between; font-size:12px; color:var(--dim); margin:0 0 28px; }
+  .row-between a{ color:var(--dim); text-decoration:none; border-bottom:1px solid var(--line); }
+  .row-between a:hover{ color:var(--moss-bright); }
+  .checkbox{ display:flex; align-items:center; gap:7px; }
+  .checkbox input{ accent-color:var(--moss); width:13px; height:13px; }
+
+  button.enter{ position:relative; width:100%; background:transparent; border:1px solid var(--moss); color:var(--moss-bright); font-size:13.5px; font-weight:600;
+    padding:13px; cursor:pointer; overflow:hidden; isolation:isolate; transition:color .45s ease; }
+  button.enter::before{ content:""; position:absolute; left:0; right:0; bottom:0; height:0%; background:linear-gradient(180deg, var(--moss-bright), var(--moss)); transition:height .45s cubic-bezier(.65,0,.35,1); z-index:-1; }
+  button.enter:hover{ color:#1a1c14; }
+  button.enter:hover::before{ height:100%; }
+
+  .foot{ text-align:center; font-size:12.5px; color:var(--dim); margin-top:22px; }
+  .foot a{ color:var(--moss-bright); text-decoration:none; cursor:pointer; }
+  .foot a:hover{ text-decoration:underline; }
+</style>
+</head>
+<body>
+
+<svg class="topo" viewBox="0 0 800 800" preserveAspectRatio="xMidYMid slice">
+  <path d="M-50 300 Q 200 250, 400 320 T 850 280"/>
+  <path d="M-50 400 Q 220 340, 420 420 T 850 380"/>
+  <path d="M-50 500 Q 240 430, 440 520 T 850 480"/>
+  <path d="M-50 600 Q 260 520, 460 610 T 850 580"/>
+</svg>
+
+<div class="stage">
+  <div class="brand">FEN &amp; MARSH TRUST</div>
+  <h1 id="heading">Sign in</h1>
+  <p class="sub" id="subhead">Your surveys, sightings, and volunteer hours.</p>
+
+  <div class="panel">
+    <div class="tabs" id="tabs">
+      <button class="active" data-tab="signin" type="button">Sign in</button>
+      <button data-tab="signup" type="button">Become a member</button>
+    </div>
+
+    <form onsubmit="return false;">
+      <div class="field extra" id="nameField">
+        <label for="nameInput">Full name</label>
+        <input type="text" id="nameInput" placeholder="Jordan Rivera" autocomplete="name" />
+      </div>
+      <div class="field">
+        <label for="emailInput">Email address</label>
+        <input type="email" id="emailInput" placeholder="you@company.com" required autocomplete="email" />
+      </div>
+      <div class="field">
+        <label for="pwInput">Password</label>
+        <input type="password" id="pwInput" placeholder="••••••••••••" required autocomplete="current-password" class="has-eye" />
+        <button type="button" class="eye-btn" data-for="pwInput" aria-label="Show password" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg></button>
+      </div>
+      <div class="row-between" id="signinOnlyRow">
+        <label class="checkbox"><input type="checkbox" /> Remember me</label>
+        <a href="#">Forgot password?</a>
+      </div>
+      <button class="enter" type="submit"><span id="submitLabel">Sign in</span></button>
+    </form>
+
+    <p class="foot" id="footNote">New here? <a data-switch="signup">Become a member</a></p>
+  </div>
+</div>
+
+<script>
+(function(){
+  document.querySelectorAll('.eye-btn').forEach(function(btn){
+    var input = document.getElementById(btn.dataset.for);
+    var showing = false;
+    btn.addEventListener('click', function(){
+      showing = !showing;
+      input.type = showing ? 'text' : 'password';
+      btn.setAttribute('aria-pressed', showing ? 'true' : 'false');
+      btn.setAttribute('aria-label', showing ? 'Hide password' : 'Show password');
+    });
+  });
+
+  var tabs = document.querySelectorAll('#tabs button[data-tab]');
+  var nameField = document.getElementById('nameField');
+  var signinOnlyRow = document.getElementById('signinOnlyRow');
+  var heading = document.getElementById('heading');
+  var subhead = document.getElementById('subhead');
+  var submitLabel = document.getElementById('submitLabel');
+  var footNote = document.getElementById('footNote');
+
+  var COPY = {
+    signin: { heading:'Sign in', sub:'Your surveys, sightings, and volunteer hours.', submit:'Sign in', foot:'New here? <a data-switch="signup">Become a member</a>' },
+    signup: { heading:'Become a member', sub:'Membership funds habitat restoration.', submit:'Join', foot:'Already a member? <a data-switch="signin">Sign in</a>' }
+  };
+  function bindSwitchLinks(){ document.querySelectorAll('[data-switch]').forEach(function(a){ a.addEventListener('click', function(e){ e.preventDefault(); setMode(a.getAttribute('data-switch')); }); }); }
+  function setMode(mode){
+    tabs.forEach(function(t){ t.classList.toggle('active', t.dataset.tab===mode); });
+    var showExtra = mode==='signup';
+    nameField.style.maxHeight = showExtra ? nameField.scrollHeight+'px' : '0px';
+    nameField.style.opacity = showExtra?1:0;
+    signinOnlyRow.style.display = mode==='signin' ? 'flex' : 'none';
+    heading.textContent = COPY[mode].heading;
+    subhead.textContent = COPY[mode].sub;
+    submitLabel.textContent = COPY[mode].submit;
+    footNote.innerHTML = COPY[mode].foot;
+    bindSwitchLinks();
+  }
+  tabs.forEach(function(t){ t.addEventListener('click', function(){ setMode(t.dataset.tab); }); });
+  bindSwitchLinks();
+  window.addEventListener('message', function(e){ if(e.data && e.data.type==='loginkit-accent'){ document.documentElement.style.setProperty('--moss', e.data.color); } });
+})();
+</script>
+
+</body>
+</html>

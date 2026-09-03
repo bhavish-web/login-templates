@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Thornbury Tea Co. — Sign In</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --forest:#16241b; --card:#1c2e21; --sage:#7ba17e; --sage-bright:#9cc19f; --line:rgba(123,161,126,0.16); --cream:#eef2ea; --dim:#83967f;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{
+    background:var(--forest); color:var(--cream); font-family:'Inter', sans-serif; -webkit-font-smoothing:antialiased;
+    min-height:100vh; display:flex; align-items:center; justify-content:center; padding:60px 24px;
+  }
+  @media (prefers-reduced-motion: reduce){ *{ animation-duration:.01ms !important; transition-duration:.01ms !important; } }
+  :focus-visible{ outline:1px solid var(--sage-bright); outline-offset:2px; }
+
+  .stage{ width:100%; max-width:380px; text-align:center; }
+
+  .cup-wrap{ position:relative; display:flex; justify-content:center; margin-bottom:14px; height:70px; }
+  .steam{ position:absolute; bottom:34px; width:2px; background:linear-gradient(to top, var(--sage), transparent); border-radius:2px; opacity:0; }
+  .steam.s1{ left:calc(50% - 10px); height:34px; animation:rise 2.4s ease-in-out infinite; }
+  .steam.s2{ left:calc(50% + 2px); height:40px; animation:rise 2.4s ease-in-out infinite .6s; }
+  .steam.s3{ left:calc(50% + 12px); height:30px; animation:rise 2.4s ease-in-out infinite 1.2s; }
+  @keyframes rise{ 0%{ transform:translateY(0) scaleY(1); opacity:0; } 30%{ opacity:.5; } 100%{ transform:translateY(-30px) scaleY(1.4); opacity:0; } }
+  .cup{ width:44px; height:30px; }
+  .cup path{ fill:none; stroke:var(--sage); stroke-width:1.5; }
+
+  .brand{ font-size:11px; letter-spacing:.22em; color:var(--sage); margin-bottom:16px;
+    opacity:0; animation:fadeUp .6s cubic-bezier(.16,1,.3,1) forwards; animation-delay:.3s; }
+  h1{ font-family:'Fraunces', serif; font-weight:600; font-size:27px; margin-bottom:8px;
+    opacity:0; animation:fadeUp .6s cubic-bezier(.16,1,.3,1) forwards; animation-delay:.36s; }
+  .sub{ font-size:13.5px; color:var(--dim); margin-bottom:32px;
+    opacity:0; animation:fadeUp .6s cubic-bezier(.16,1,.3,1) forwards; animation-delay:.42s; }
+  @keyframes fadeUp{ to{ opacity:1; transform:none; } }
+  h1, .sub{ transform:translateY(6px); }
+
+  .panel{ text-align:left; background:var(--card); border:1px solid var(--line); padding:36px 32px; border-radius:3px;
+    opacity:0; animation:fadeUp .7s cubic-bezier(.16,1,.3,1) forwards; animation-delay:.48s; }
+
+  .tabs{ position:relative; display:flex; gap:24px; margin-bottom:28px; border-bottom:1px solid var(--line); }
+  .tabs button{ background:none; border:none; color:var(--dim); font-size:12.5px; font-weight:500; padding:0 0 12px; cursor:pointer; transition:color .3s ease; }
+  .tabs button.active{ color:var(--sage-bright); }
+  .tab-indicator{ position:absolute; bottom:-1px; height:1.5px; background:var(--sage-bright); transition:transform .5s cubic-bezier(.65,0,.35,1), width .5s cubic-bezier(.65,0,.35,1); }
+
+  .field{ position:relative; margin-bottom:24px; }
+  .field label{ position:absolute; left:0; top:11px; font-size:14px; color:var(--dim); pointer-events:none; transition:transform .3s cubic-bezier(.4,0,.2,1), font-size .3s ease, color .3s ease; transform-origin:left top; }
+  .field input{ width:100%; background:none; border:none; border-bottom:1px solid var(--line); color:var(--cream); font-size:15px; padding:10px 0; outline:none; transition:border-color .3s ease; }
+  .field input:focus{ border-color:var(--sage); }
+  .field input:focus + label, .field input:not(:placeholder-shown) + label{ transform:translateY(-19px); font-size:11px; color:var(--sage-bright); }
+  .field input::placeholder{ color:transparent; }
+  .extra{ max-height:0; opacity:0; overflow:hidden; transition:max-height .5s cubic-bezier(.4,0,.2,1), opacity .35s ease; }
+
+  .row-between{ display:flex; justify-content:space-between; font-size:12px; color:var(--dim); margin:0 0 28px; }
+  .row-between a{ color:var(--dim); text-decoration:none; border-bottom:1px solid var(--line); }
+  .row-between a:hover{ color:var(--sage-bright); }
+  .checkbox{ display:flex; align-items:center; gap:7px; }
+  .checkbox input{ accent-color:var(--sage); width:13px; height:13px; }
+
+  button.enter{ width:100%; background:var(--sage); border:none; color:#16241b; font-weight:600; font-size:13.5px; padding:13px; border-radius:3px; cursor:pointer; transition:background .25s ease, transform .1s ease; }
+  button.enter:hover{ background:var(--sage-bright); }
+  button.enter:active{ transform:scale(.99); }
+
+  .foot{ text-align:center; font-size:12.5px; color:var(--dim); margin-top:22px; }
+  .foot a{ color:var(--sage-bright); text-decoration:none; cursor:pointer; }
+  .foot a:hover{ text-decoration:underline; }
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="cup-wrap">
+    <div class="steam s1"></div><div class="steam s2"></div><div class="steam s3"></div>
+    <svg class="cup" viewBox="0 0 44 30"><path d="M4 6 h28 v12 a14 12 0 0 1 -28 0 z"/><path d="M32 10 q8 0 8 6 q0 6 -8 6"/></svg>
+  </div>
+
+  <div class="brand">THORNBURY TEA CO.</div>
+  <h1 id="heading">Sign in</h1>
+  <p class="sub" id="subhead">Your subscriptions, tasting notes, and orders.</p>
+
+  <div class="panel">
+    <div class="tabs" id="tabs">
+      <button class="active" data-tab="signin" type="button">Sign in</button>
+      <button data-tab="signup" type="button">Create account</button>
+      <span class="tab-indicator" id="tabIndicator"></span>
+    </div>
+
+    <form onsubmit="return false;">
+      <div class="field extra" id="nameField">
+        <input type="text" placeholder=" " id="nameInput" autocomplete="name" />
+        <label for="nameInput">Full name</label>
+      </div>
+      <div class="field">
+        <input type="email" placeholder=" " id="emailInput" required autocomplete="email" />
+        <label for="emailInput">Email address</label>
+      </div>
+      <div class="field">
+        <input type="password" placeholder=" " id="pwInput" required autocomplete="current-password" class="has-eye" style="padding-right:34px;" />
+        <label for="pwInput">Password</label>
+        <button type="button" class="eye-btn" data-for="pwInput" aria-label="Show password" aria-pressed="false" style="position:absolute; right:2px; bottom:6px; background:none; border:none; padding:5px; cursor:pointer; color:var(--dim);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="15" height="15"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg></button>
+      </div>
+      <div class="row-between" id="signinOnlyRow">
+        <label class="checkbox"><input type="checkbox" /> Remember me</label>
+        <a href="#">Forgot password?</a>
+      </div>
+      <button class="enter" type="submit"><span id="submitLabel">Sign in</span></button>
+    </form>
+
+    <p class="foot" id="footNote">New here? <a data-switch="signup">Create an account</a></p>
+  </div>
+</div>
+
+<script>
+(function(){
+  document.querySelectorAll('.eye-btn').forEach(function(btn){
+    var input = document.getElementById(btn.dataset.for);
+    var showing = false;
+    btn.addEventListener('click', function(){
+      showing = !showing;
+      input.type = showing ? 'text' : 'password';
+      btn.setAttribute('aria-pressed', showing ? 'true' : 'false');
+      btn.setAttribute('aria-label', showing ? 'Hide password' : 'Show password');
+    });
+  });
+
+  var tabs = document.querySelectorAll('#tabs button[data-tab]');
+  var indicator = document.getElementById('tabIndicator');
+  var nameField = document.getElementById('nameField');
+  var signinOnlyRow = document.getElementById('signinOnlyRow');
+  var heading = document.getElementById('heading');
+  var subhead = document.getElementById('subhead');
+  var submitLabel = document.getElementById('submitLabel');
+  var footNote = document.getElementById('footNote');
+
+  var COPY = {
+    signin: { heading:'Sign in', sub:'Your subscriptions, tasting notes, and orders.', submit:'Sign in', foot:'New here? <a data-switch="signup">Create an account</a>' },
+    signup: { heading:'Create your account', sub:'Start a subscription and save your favorite blends.', submit:'Create account', foot:'Already have an account? <a data-switch="signin">Sign in</a>' }
+  };
+  function positionIndicator(el){ indicator.style.width = el.offsetWidth+'px'; indicator.style.transform = 'translateX('+el.offsetLeft+'px)'; }
+  function bindSwitchLinks(){ document.querySelectorAll('[data-switch]').forEach(function(a){ a.addEventListener('click', function(e){ e.preventDefault(); setMode(a.getAttribute('data-switch')); }); }); }
+  function setMode(mode){
+    tabs.forEach(function(t){ t.classList.toggle('active', t.dataset.tab===mode); if(t.dataset.tab===mode) positionIndicator(t); });
+    var showExtra = mode==='signup';
+    nameField.style.maxHeight = showExtra ? nameField.scrollHeight+'px' : '0px';
+    nameField.style.opacity = showExtra?1:0;
+    signinOnlyRow.style.display = mode==='signin' ? 'flex' : 'none';
+    heading.textContent = COPY[mode].heading;
+    subhead.textContent = COPY[mode].sub;
+    submitLabel.textContent = COPY[mode].submit;
+    footNote.innerHTML = COPY[mode].foot;
+    bindSwitchLinks();
+  }
+  tabs.forEach(function(t){ t.addEventListener('click', function(){ setMode(t.dataset.tab); }); });
+  bindSwitchLinks();
+  window.addEventListener('load', function(){ positionIndicator(document.querySelector('#tabs button.active')); });
+  window.addEventListener('message', function(e){ if(e.data && e.data.type==='loginkit-accent'){ document.documentElement.style.setProperty('--sage', e.data.color); } });
+})();
+</script>
+
+</body>
+</html>

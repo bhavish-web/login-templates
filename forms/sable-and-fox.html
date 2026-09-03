@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sable &amp; Fox — Client Sign In</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --charcoal:#171310; --card:#1f1a15; --copper:#b0714a; --copper-bright:#d3966a; --line:rgba(176,113,74,0.18); --cream:#f0e6da; --dim:#8f8073;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{
+    background:var(--charcoal); color:var(--cream); font-family:'Inter', sans-serif; -webkit-font-smoothing:antialiased;
+    min-height:100vh; display:grid; grid-template-columns:1fr 1fr;
+  }
+  @media(max-width:860px){ body{ grid-template-columns:1fr; } .stitch-side{ display:none; } }
+  @media (prefers-reduced-motion: reduce){ *{ animation-duration:.01ms !important; transition-duration:.01ms !important; } }
+  :focus-visible{ outline:1px solid var(--copper-bright); outline-offset:2px; }
+
+  .stitch-side{ position:relative; background:linear-gradient(160deg, #221b15, #171310); display:flex; align-items:center; justify-content:center; overflow:hidden; }
+  .stitch-frame{ width:70%; aspect-ratio:1; }
+  .stitch-frame rect{ fill:none; stroke:var(--copper); stroke-width:1.5; stroke-dasharray:6 5; stroke-dashoffset:600; animation:stitchDraw 2.2s ease forwards; animation-delay:.2s; }
+  @keyframes stitchDraw{ to{ stroke-dashoffset:0; } }
+  .stitch-mono{ font-family:'Fraunces', serif; font-style:italic; font-size:15px; color:var(--dim); text-align:center; margin-top:22px;
+    opacity:0; animation:fadeIn .7s ease forwards; animation-delay:2.3s; }
+  @keyframes fadeIn{ to{ opacity:1; } }
+  .stitch-wrap{ text-align:center; }
+
+  .form-side{ display:flex; align-items:center; justify-content:center; padding:48px; }
+  .panel{ width:100%; max-width:360px;
+    opacity:0; transform:translateY(14px); animation:reveal .9s cubic-bezier(.16,1,.3,1) forwards; animation-delay:.15s; }
+  @keyframes reveal{ to{ opacity:1; transform:none; } }
+
+  .brand{ font-size:11px; letter-spacing:.22em; color:var(--copper); margin-bottom:16px; }
+  h1{ font-family:'Fraunces', serif; font-weight:600; font-size:27px; margin-bottom:8px; }
+  .sub{ font-size:13.5px; color:var(--dim); margin-bottom:32px; }
+
+  .field{ position:relative; margin-bottom:24px; }
+  .field label{ display:block; font-size:11px; letter-spacing:.04em; color:var(--dim); margin-bottom:8px; }
+  .field input{ width:100%; background:none; border:none; border-bottom:1px solid var(--line); color:var(--cream); font-size:15px; padding:9px 32px 9px 0; outline:none; transition:border-color .3s ease; }
+  .field input:focus{ border-color:var(--copper); }
+  .field input::placeholder{ color:var(--dim); opacity:.5; }
+  .eye-btn{ position:absolute; right:2px; bottom:6px; background:none; border:none; padding:5px; cursor:pointer; color:var(--dim); display:flex; }
+  .eye-btn:hover{ color:var(--copper-bright); }
+  .eye-btn svg{ width:15px; height:15px; }
+
+  .row-between{ display:flex; justify-content:space-between; font-size:12px; color:var(--dim); margin:0 0 28px; }
+  .row-between a{ color:var(--dim); text-decoration:none; border-bottom:1px solid var(--line); }
+  .row-between a:hover{ color:var(--copper-bright); }
+  .checkbox{ display:flex; align-items:center; gap:7px; }
+  .checkbox input{ accent-color:var(--copper); width:13px; height:13px; }
+
+  button.enter{
+    position:relative; width:100%; background:none; border:1.5px solid var(--copper); color:var(--copper-bright);
+    font-size:13.5px; font-weight:600; padding:13px; cursor:pointer; isolation:isolate; overflow:hidden;
+  }
+  button.enter .stitch-outline{ position:absolute; inset:-1.5px; pointer-events:none; }
+  button.enter .stitch-outline rect{ fill:none; stroke:var(--copper-bright); stroke-width:1.5; stroke-dasharray:4 4; stroke-dashoffset:200; transition:stroke-dashoffset .5s ease; }
+  button.enter:hover .stitch-outline rect{ stroke-dashoffset:0; }
+  button.enter span{ position:relative; }
+
+  .foot{ text-align:center; font-size:12.5px; color:var(--dim); margin-top:26px; }
+  .foot a{ color:var(--copper-bright); text-decoration:none; font-weight:600; cursor:pointer; }
+  .foot a:hover{ text-decoration:underline; }
+</style>
+</head>
+<body>
+
+<div class="stitch-side">
+  <div class="stitch-wrap">
+    <svg class="stitch-frame" viewBox="0 0 200 200"><rect x="20" y="20" width="160" height="160" rx="4"/></svg>
+    <div class="stitch-mono">Sable &amp; Fox — Est. Leather Goods</div>
+  </div>
+</div>
+
+<div class="form-side">
+  <div class="panel">
+    <div class="brand">SABLE &amp; FOX</div>
+    <h1>Client sign in</h1>
+    <p class="sub">Your commissions, repairs, and care records.</p>
+
+    <form onsubmit="return false;" id="signinForm">
+      <div class="field">
+        <label for="emailInput">Email address</label>
+        <input type="email" id="emailInput" placeholder="you@company.com" required autocomplete="email" />
+      </div>
+      <div class="field">
+        <label for="pwInput">Password</label>
+        <input type="password" id="pwInput" placeholder="••••••••••••" required autocomplete="current-password" class="has-eye" />
+        <button type="button" class="eye-btn" data-for="pwInput" aria-label="Show password" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg></button>
+      </div>
+      <div class="row-between">
+        <label class="checkbox"><input type="checkbox" /> Remember me</label>
+        <a href="#">Forgot password?</a>
+      </div>
+      <button class="enter" type="submit">
+        <span>Sign in</span>
+        <svg class="stitch-outline" viewBox="0 0 100 46" preserveAspectRatio="none"><rect x="1" y="1" width="98" height="44"/></svg>
+      </button>
+    </form>
+
+    <p class="foot">By appointment or referral. <a href="#">Request an introduction</a></p>
+  </div>
+</div>
+
+<script>
+(function(){
+  document.querySelectorAll('.eye-btn').forEach(function(btn){
+    var input = document.getElementById(btn.dataset.for);
+    var showing = false;
+    btn.addEventListener('click', function(){
+      showing = !showing;
+      input.type = showing ? 'text' : 'password';
+      btn.setAttribute('aria-pressed', showing ? 'true' : 'false');
+      btn.setAttribute('aria-label', showing ? 'Hide password' : 'Show password');
+    });
+  });
+  window.addEventListener('message', function(e){ if(e.data && e.data.type==='loginkit-accent'){ document.documentElement.style.setProperty('--copper', e.data.color); } });
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Kestrel &amp; Kite — Sign In</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --night:#0b1119; --card:#111925; --sky:#5b8fc7; --sky-bright:#8ab3de; --line:rgba(91,143,199,0.14); --cream:#eaf0f7; --dim:#7186a0;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{
+    background:var(--night); color:var(--cream); font-family:'Inter', sans-serif; -webkit-font-smoothing:antialiased;
+    min-height:100vh; display:grid; grid-template-columns:1fr 1fr;
+  }
+  @media(max-width:860px){ body{ grid-template-columns:1fr; } .radar-side{ display:none; } }
+  @media (prefers-reduced-motion: reduce){ *{ animation-duration:.01ms !important; transition-duration:.01ms !important; } .sweep{ animation:none !important; } }
+  :focus-visible{ outline:1px solid var(--sky-bright); outline-offset:2px; }
+
+  .radar-side{ position:relative; background:radial-gradient(circle at 50% 50%, #0f1826, #0b1119); display:flex; align-items:center; justify-content:center; overflow:hidden; }
+  .radar{ width:70%; max-width:280px; position:relative; }
+  .radar circle{ fill:none; stroke:var(--line); stroke-width:1; }
+  .radar-svg{ overflow:visible; }
+  .sweep{ transform-origin:100px 100px; animation:rotate 4s linear infinite; }
+  @keyframes rotate{ to{ transform:rotate(360deg); } }
+  .blip{ fill:var(--sky-bright); opacity:0; animation:blip 4s ease-in-out infinite; }
+  .blip.b1{ animation-delay:.5s; } .blip.b2{ animation-delay:2s; } .blip.b3{ animation-delay:3.1s; }
+  @keyframes blip{ 0%,90%,100%{ opacity:0; } 95%{ opacity:1; } }
+
+  .form-side{ display:flex; align-items:center; justify-content:center; padding:48px; }
+  .panel{ width:100%; max-width:360px;
+    opacity:0; transform:translateY(14px); animation:reveal .9s cubic-bezier(.16,1,.3,1) forwards; animation-delay:.15s; }
+  @keyframes reveal{ to{ opacity:1; transform:none; } }
+
+  .brand{ font-size:11px; letter-spacing:.22em; color:var(--sky); margin-bottom:16px; }
+  h1{ font-family:'Playfair Display', serif; font-weight:600; font-size:26px; margin-bottom:8px; }
+  .sub{ font-size:13.5px; color:var(--dim); margin-bottom:30px; }
+
+  .field{ position:relative; margin-bottom:24px; }
+  .field label{ display:block; font-size:11px; letter-spacing:.04em; color:var(--dim); margin-bottom:8px; }
+  .field input{ width:100%; background:none; border:none; border-bottom:1px solid var(--line); color:var(--cream); font-size:15px; padding:9px 32px 9px 0; outline:none; transition:border-color .3s ease; }
+  .field input:focus{ border-color:var(--sky); }
+  .field input::placeholder{ color:var(--dim); opacity:.5; }
+  .eye-btn{ position:absolute; right:2px; bottom:6px; background:none; border:none; padding:5px; cursor:pointer; color:var(--dim); display:flex; }
+  .eye-btn:hover{ color:var(--sky-bright); }
+  .eye-btn svg{ width:15px; height:15px; }
+
+  .row-between{ display:flex; justify-content:space-between; font-size:12px; color:var(--dim); margin:0 0 26px; }
+  .row-between a{ color:var(--dim); text-decoration:none; border-bottom:1px solid var(--line); }
+  .row-between a:hover{ color:var(--sky-bright); }
+  .checkbox{ display:flex; align-items:center; gap:7px; }
+  .checkbox input{ accent-color:var(--sky); width:13px; height:13px; }
+
+  button.enter{ width:100%; background:var(--sky); border:none; color:#0b1119; font-size:13.5px; font-weight:600; padding:13px; cursor:pointer; transition:background .25s ease, transform .1s ease; }
+  button.enter:hover{ background:var(--sky-bright); }
+  button.enter:active{ transform:scale(.99); }
+
+  .alt{ margin-top:16px; }
+  .alt button{ width:100%; background:none; border:1px solid var(--line); color:var(--cream); font-size:12.5px; padding:10px; cursor:pointer; transition:border-color .2s ease; }
+  .alt button:hover{ border-color:var(--sky); }
+
+  .foot{ text-align:center; font-size:12.5px; color:var(--dim); margin-top:24px; }
+  .foot a{ color:var(--sky-bright); text-decoration:none; cursor:pointer; }
+  .foot a:hover{ text-decoration:underline; }
+</style>
+</head>
+<body>
+
+<div class="radar-side">
+  <svg class="radar" viewBox="0 0 200 200">
+    <circle cx="100" cy="100" r="90"/><circle cx="100" cy="100" r="60"/><circle cx="100" cy="100" r="30"/>
+    <line x1="10" y1="100" x2="190" y2="100" stroke="var(--line)" stroke-width="1"/>
+    <line x1="100" y1="10" x2="100" y2="190" stroke="var(--line)" stroke-width="1"/>
+    <g class="sweep"><path d="M100 100 L100 10 A90 90 0 0 1 163 37 Z" fill="url(#sweepGrad)"/></g>
+    <circle class="blip b1" cx="140" cy="70" r="3"/>
+    <circle class="blip b2" cx="70" cy="130" r="3"/>
+    <circle class="blip b3" cx="120" cy="150" r="3"/>
+    <defs><linearGradient id="sweepGrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="rgba(91,143,199,0.35)"/><stop offset="100%" stop-color="transparent"/></linearGradient></defs>
+  </svg>
+</div>
+
+<div class="form-side">
+  <div class="panel">
+    <div class="brand">KESTREL &amp; KITE</div>
+    <h1>Charter sign in</h1>
+    <p class="sub">Your itineraries, aircraft, and flight crew.</p>
+
+    <form onsubmit="return false;">
+      <div class="field">
+        <label for="emailInput">Email address</label>
+        <input type="email" id="emailInput" placeholder="you@company.com" required autocomplete="email" />
+      </div>
+      <div class="field">
+        <label for="pwInput">Password</label>
+        <input type="password" id="pwInput" placeholder="••••••••••••" required autocomplete="current-password" class="has-eye" />
+        <button type="button" class="eye-btn" data-for="pwInput" aria-label="Show password" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg></button>
+      </div>
+      <div class="row-between">
+        <label class="checkbox"><input type="checkbox" /> Remember me</label>
+        <a href="#">Forgot password?</a>
+      </div>
+      <button class="enter" type="submit">Sign in</button>
+    </form>
+    <div class="alt"><button type="button">Use a passkey instead</button></div>
+
+    <p class="foot">New to Kestrel &amp; Kite? <a href="#">Request charter access</a></p>
+  </div>
+</div>
+
+<script>
+(function(){
+  document.querySelectorAll('.eye-btn').forEach(function(btn){
+    var input = document.getElementById(btn.dataset.for);
+    var showing = false;
+    btn.addEventListener('click', function(){
+      showing = !showing;
+      input.type = showing ? 'text' : 'password';
+      btn.setAttribute('aria-pressed', showing ? 'true' : 'false');
+      btn.setAttribute('aria-label', showing ? 'Hide password' : 'Show password');
+    });
+  });
+  window.addEventListener('message', function(e){ if(e.data && e.data.type==='loginkit-accent'){ document.documentElement.style.setProperty('--sky', e.data.color); } });
+})();
+</script>
+
+</body>
+</html>
