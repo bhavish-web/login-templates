@@ -273,5 +273,115 @@
     "palette_key": "sterling-palegold",
     "blurb": "A private bank: quiet market-ticker text scrolls along the top and bottom edges \u2014 invitation-only, passkey offered as an alternative.",
     "n": 25
+  },
+  {
+    "id": "the-signal-room",
+    "file": "forms/the-signal-room.html",
+    "title": "The Signal Room",
+    "layout": "Split Screen + Waveform Trace",
+    "layout_key": "split-waveform",
+    "palette": "Slate & Teal",
+    "palette_key": "slate-teal",
+    "blurb": "A radio archive: an oscilloscope waveform traces itself across a grid before the frequency locks in.",
+    "n": 26
+  },
+  {
+    "id": "halcyon-baths",
+    "file": "forms/halcyon-baths.html",
+    "title": "Halcyon Baths",
+    "layout": "Pill Tab + Water Ripples",
+    "layout_key": "pill-ripple",
+    "palette": "Deep Water & Teal",
+    "palette_key": "water-teal",
+    "blurb": "A bathhouse: concentric rings ripple outward continuously behind a pale card floating on dark water.",
+    "n": 27
+  },
+  {
+    "id": "perry-and-ashworth",
+    "file": "forms/perry-and-ashworth.html",
+    "title": "Perry & Ashworth",
+    "layout": "Plain Tab + Magnifier Sweep",
+    "layout_key": "plain-magnifier",
+    "palette": "Aged Paper & Brass",
+    "palette_key": "paper-brass",
+    "blurb": "An antiquarian bookshop: a magnifying glass sweeps in from off-screen and settles before the page reveals itself.",
+    "n": 28
+  },
+  {
+    "id": "kestrel-and-kite",
+    "file": "forms/kestrel-and-kite.html",
+    "title": "Kestrel & Kite",
+    "layout": "Split Screen, Sign-In Only",
+    "layout_key": "split-signin-only-2",
+    "palette": "Night Sky & Blue",
+    "palette_key": "night-sky",
+    "blurb": "A private charter operator: a radar sweep rotates continuously with occasional blips, passkey offered alongside password.",
+    "n": 29
+  },
+  {
+    "id": "thornbury-tea",
+    "file": "forms/thornbury-tea.html",
+    "title": "Thornbury Tea Co.",
+    "layout": "Underline Tab + Rising Steam",
+    "layout_key": "underline-steam",
+    "palette": "Forest & Sage",
+    "palette_key": "forest-sage",
+    "blurb": "A tea importer: three wisps of steam rise continuously from a line-drawn cup above the card.",
+    "n": 30
+  },
+  {
+    "id": "fen-and-marsh",
+    "file": "forms/fen-and-marsh.html",
+    "title": "Fen & Marsh Trust",
+    "layout": "Plain Tab + Topographic Draw",
+    "layout_key": "plain-topo",
+    "palette": "Bark & Moss",
+    "palette_key": "bark-moss",
+    "blurb": "A land trust: topographic contour lines draw themselves across the full background before the card fades in.",
+    "n": 31
+  },
+  {
+    "id": "voss-and-kessler",
+    "file": "forms/voss-and-kessler.html",
+    "title": "Voss & Kessler",
+    "layout": "Centered, Sign-In Only",
+    "layout_key": "centered-blueprint",
+    "palette": "Blueprint Navy",
+    "palette_key": "blueprint-navy",
+    "blurb": "An architecture firm: a drafted frame draws itself onto a blueprint grid before the client panel appears.",
+    "n": 32
+  },
+  {
+    "id": "ember-and-ash",
+    "file": "forms/ember-and-ash.html",
+    "title": "Ember & Ash",
+    "layout": "Pill Tab + Caramel Pour",
+    "layout_key": "pill-pour",
+    "palette": "Cocoa & Caramel",
+    "palette_key": "cocoa-caramel",
+    "blurb": "A chocolatier: a thin stream pours and pools above the card before the type settles in.",
+    "n": 33
+  },
+  {
+    "id": "rowan-and-fitch",
+    "file": "forms/rowan-and-fitch.html",
+    "title": "Rowan & Fitch",
+    "layout": "Plain Tab + Tape Unspool",
+    "layout_key": "plain-tape",
+    "palette": "Navy & Tailor's Gold",
+    "palette_key": "navy-tailorsgold",
+    "blurb": "A bespoke tailor: a dashed measuring tape unspools left to right above the heading before the form appears.",
+    "n": 34
+  },
+  {
+    "id": "blackwood-auctions",
+    "file": "forms/blackwood-auctions.html",
+    "title": "Blackwood Auctions",
+    "layout": "Footer-Link Toggle, No Tabs",
+    "layout_key": "footer-toggle",
+    "palette": "Ink & Auction Gold",
+    "palette_key": "ink-auctiongold",
+    "blurb": "An auction house: a gavel swings down and strikes before the panel settles \u2014 sign-in and registration switch via the footer link alone, no visible tabs.",
+    "n": 35
   }
 ]
