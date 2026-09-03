@@ -1,15 +1,15 @@
 :root{
-  --bg:#0d0b08;
-  --paper:#161210;
-  --paper-2:#1c1712;
-  --ink:#f0e9da;
-  --dim:#9c8f78;
-  --line:rgba(201,162,74,0.16);
-  --line-strong:rgba(201,162,74,0.3);
-  --gold:#c9a24a;
-  --gold-bright:#e7cb8a;
-  --gold-soft:rgba(201,162,74,0.1);
-  --danger:#c4685a;
+  --bg:#f6f1e6;
+  --paper:#fffdf8;
+  --paper-2:#efe4d1;
+  --ink:#241a16;
+  --dim:#8a7458;
+  --line:#ddccae;
+  --line-strong:#c9b483;
+  --gold:#8a6a35;
+  --gold-bright:#6e2331;
+  --gold-soft:rgba(138,106,53,0.09);
+  --danger:#c4453a;
   --mono:'Inter', sans-serif;
   --display:'Cormorant Garamond', serif;
   --body:'Inter', sans-serif;
@@ -84,7 +84,7 @@ code{font-family:'Inter', monospace; font-size:0.88em; background:var(--gold-sof
 .hero-preview iframe.loaded{opacity:1;}
 .hero-preview .hp-label{
   position:absolute; bottom:0; left:0; right:0; padding:12px 16px; font-family:var(--mono);
-  font-size:10.5px; letter-spacing:.05em; background:rgba(10,8,6,0.86); color:var(--gold-bright);
+  font-size:10.5px; letter-spacing:.05em; background:rgba(10,8,6,0.86); color:#e7cb8a;
   display:flex; justify-content:space-between; border-top:1px solid var(--line);
 }
 
@@ -137,7 +137,7 @@ code{font-family:'Inter', monospace; font-size:0.88em; background:var(--gold-sof
 .card-preview iframe.loaded{opacity:1;}
 .card-preview .num{
   position:absolute; top:10px; left:10px; font-family:var(--mono); font-size:10px; background:rgba(10,8,6,0.75);
-  color:var(--gold-bright); padding:3px 8px; border-radius:999px; z-index:2; letter-spacing:.03em;
+  color:#e7cb8a; padding:3px 8px; border-radius:999px; z-index:2; letter-spacing:.03em;
 }
 .fav-btn{
   position:absolute; top:8px; right:8px; z-index:2; width:29px; height:29px; border-radius:50%; border:none;
@@ -340,7 +340,7 @@ html.cursor-active a, html.cursor-active button, html.cursor-active input, html.
 html.cursor-active .cursor-dot, html.cursor-active .cursor-ring{ opacity:1; }
 .cursor-dot{ width:6px; height:6px; background:var(--gold-bright); box-shadow:0 0 8px var(--gold); margin:-3px 0 0 -3px; }
 .cursor-ring{ width:34px; height:34px; border:1px solid var(--gold); margin:-17px 0 0 -17px; transition:opacity .2s ease, width .25s ease, height .25s ease, margin .25s ease, background .25s ease, border-color .25s ease; }
-.cursor-ring.hovering{ width:52px; height:52px; margin:-26px 0 0 -26px; background:rgba(201,162,74,0.1); border-color:var(--gold-bright); }
+.cursor-ring.hovering{ width:52px; height:52px; margin:-26px 0 0 -26px; background:var(--gold-soft); border-color:var(--gold-bright); }
 
 /* sparkle particle canvas */
 #sparkle-canvas{ position:fixed; inset:0; pointer-events:none; z-index:150; }
