@@ -402,3 +402,83 @@ html.cursor-active .cursor-dot, html.cursor-active .cursor-ring{ opacity:1; }
   .cursor-dot, .cursor-ring, #sparkle-canvas{ display:none; }
   .card{ animation:none; transform:none !important; }
 }
+
+/* ================= nav CTA ================= */
+.nav-cta{
+  font-family:var(--body); font-size:13px; font-weight:600; color:var(--gold-bright); background:none; border:1px solid var(--gold);
+  border-radius:999px; padding:6px 14px; cursor:pointer; transition:background .2s ease, color .2s ease;
+}
+.nav-cta:hover{ background:var(--gold); color:var(--bg); }
+
+/* ================= live rename ================= */
+.live-rename{
+  display:flex; align-items:center; gap:10px; margin-top:26px; padding:12px 16px; border:1px dashed var(--line-strong);
+  border-radius:999px; max-width:440px;
+}
+.live-rename svg{ width:15px; height:15px; color:var(--gold); flex:none; }
+.live-rename input{
+  border:none; outline:none; background:transparent; font-family:var(--body); font-size:13.5px; color:var(--ink); width:100%;
+}
+.live-rename input::placeholder{ color:var(--dim); }
+
+/* ================= canvas mode ================= */
+.canvas-overlay{
+  position:fixed; inset:0; z-index:120; background:color-mix(in srgb, var(--bg) 96%, transparent); backdrop-filter:blur(4px);
+}
+.canvas-toolbar{
+  position:absolute; top:0; left:0; right:0; height:56px; display:flex; align-items:center; justify-content:space-between;
+  padding:0 24px; border-bottom:1px solid var(--line); font-family:var(--mono); font-size:12.5px; color:var(--dim); z-index:2;
+  background:var(--paper);
+}
+.canvas-toolbar button{
+  font-family:var(--body); font-size:12.5px; font-weight:600; padding:7px 16px; border-radius:2px; border:1px solid var(--line);
+  background:transparent; color:var(--ink); cursor:pointer; transition:border-color .2s ease;
+}
+.canvas-toolbar button:hover{ border-color:var(--gold); }
+.canvas-board{ position:absolute; top:56px; left:0; right:0; bottom:0; overflow:auto; }
+.canvas-window{
+  position:absolute; width:300px; background:var(--paper); border:1px solid var(--line-strong); border-radius:2px;
+  box-shadow:0 30px 60px -24px rgba(0,0,0,0.4); overflow:hidden; z-index:10;
+}
+.canvas-window-head{
+  display:flex; align-items:center; justify-content:space-between; padding:9px 12px; background:var(--paper-2);
+  border-bottom:1px solid var(--line); cursor:grab; font-family:var(--display); font-style:italic; font-size:13px; font-weight:600;
+  user-select:none;
+}
+.canvas-window-head:active{ cursor:grabbing; }
+.canvas-window-close{
+  border:none; background:none; color:var(--dim); cursor:pointer; font-size:13px; width:20px; height:20px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center; flex:none;
+}
+.canvas-window-close:hover{ color:var(--danger); }
+.canvas-window iframe{ width:100%; height:420px; border:none; pointer-events:none; }
+.canvas-window.active iframe{ pointer-events:auto; }
+.canvas-hint{ position:absolute; top:76px; left:24px; font-family:var(--mono); font-size:11.5px; color:var(--dim); z-index:1; }
+
+/* ================= build me one ================= */
+.build-modal{ max-width:640px; }
+.build-body{ padding:20px 24px 28px; }
+.build-input-row{ display:flex; gap:10px; }
+.build-input-row input{
+  flex:1; font-family:var(--body); font-size:14px; padding:11px 14px; border:1px solid var(--line); border-radius:2px;
+  background:var(--paper-2); color:var(--ink); outline:none; transition:border-color .2s ease;
+}
+.build-input-row input:focus{ border-color:var(--gold); }
+.build-input-row button{
+  font-family:var(--body); font-size:13.5px; font-weight:600; padding:11px 20px; border-radius:2px; border:1px solid var(--gold);
+  background:var(--gold); color:var(--bg); cursor:pointer; transition:background .2s ease; flex:none;
+}
+.build-input-row button:hover{ background:var(--gold-bright); border-color:var(--gold-bright); }
+.build-preview-wrap{ margin-top:20px; }
+#buildPreview{ width:100%; height:480px; border:1px solid var(--line); border-radius:2px; background:#fff; }
+.build-actions{ display:flex; gap:10px; margin-top:14px; }
+.build-actions button{
+  font-family:var(--mono); font-size:12px; padding:8px 16px; border-radius:2px; border:1px solid var(--line);
+  background:transparent; color:var(--ink); cursor:pointer; transition:border-color .2s ease, color .2s ease;
+}
+.build-actions button:hover{ border-color:var(--gold); color:var(--gold-bright); }
+
+@media (max-width: 700px){
+  .canvas-window{ width:88vw; }
+  .build-input-row{ flex-direction:column; }
+}
