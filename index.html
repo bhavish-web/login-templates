@@ -24,6 +24,7 @@
     <nav class="header-nav">
       <a href="#grid">Browse</a>
       <a href="#faq">FAQ</a>
+      <button class="nav-cta" id="buildOpen" type="button">Build me one</button>
       <a href="https://github.com" target="_blank" rel="noopener">GitHub ↗</a>
       <button class="icon-btn" id="surprise-btn" aria-label="Surprise me" title="Surprise me">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4l3 3M4 20l3-3M20 4l-3 3M20 20l-3-3"/><circle cx="12" cy="12" r="5"/></svg>
@@ -42,6 +43,10 @@
         <div><strong id="stat-count">35</strong><span>templates</span></div>
         <div><strong>35</strong><span>signature motions</span></div>
         <div><strong>0</strong><span>dependencies</span></div>
+      </div>
+      <div class="live-rename">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.85 2.83 0 114 4L7.5 20.5 2 22l1.5-5.5z"/></svg>
+        <input type="text" id="liveRename" placeholder="Type your brand name — watch it appear on every card" autocomplete="off" />
       </div>
     </div>
     <div class="hero-preview" id="hero-preview">
@@ -164,6 +169,7 @@
     <div class="compare-slots" id="compare-slots"></div>
     <div class="compare-actions">
       <button id="compare-clear" type="button">Clear</button>
+      <button id="canvas-open" type="button">Canvas</button>
       <button id="compare-open" class="primary" type="button">Compare <span id="compare-count">0</span></button>
     </div>
   </div>
@@ -176,6 +182,36 @@
       <button class="modal-close" id="compare-close" aria-label="Close">✕</button>
     </div>
     <div class="compare-grid" id="compare-grid"></div>
+  </div>
+</div>
+
+<div class="canvas-overlay" id="canvasOverlay" hidden>
+  <div class="canvas-toolbar">
+    <span>Drag any window by its header to arrange them.</span>
+    <button id="canvasClose" type="button">Close</button>
+  </div>
+  <div class="canvas-board" id="canvasBoard"></div>
+</div>
+
+<div class="modal-backdrop" id="buildBackdrop">
+  <div class="modal build-modal">
+    <div class="modal-header">
+      <div><h3>Build me one</h3><p>Describe a business in a sentence — a new template assembles instantly, right in your browser. No AI call, no server — just a palette library, copy templates, and a few motion scaffolds combined on the fly.</p></div>
+      <button class="modal-close" id="buildClose" aria-label="Close">✕</button>
+    </div>
+    <div class="build-body">
+      <div class="build-input-row">
+        <input type="text" id="buildDesc" placeholder="e.g. a vintage motorcycle repair shop" autocomplete="off" />
+        <button id="buildGo" type="button">Generate</button>
+      </div>
+      <div class="build-preview-wrap" id="buildPreviewWrap" hidden>
+        <iframe id="buildPreview" title="Generated template preview"></iframe>
+        <div class="build-actions">
+          <button id="buildAgain" type="button">Generate another</button>
+          <button id="buildDownload" type="button">Download .html</button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
